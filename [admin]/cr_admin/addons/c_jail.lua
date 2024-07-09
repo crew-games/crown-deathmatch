@@ -22,7 +22,7 @@ setTimer(function()
 			end
 			
 			if tonumber(currentSecs) then
-				timer = setTimer(function ()
+				timer = setTimer(function()
 					if tonumber(currentSecs) then
 						currentSecs = currentSecs - 1
 					end
@@ -38,40 +38,14 @@ setTimer(function()
 		local width = dxGetTextWidth(title:gsub("#%x%x%x%x%x%x", ""), 1, fonts.font1) + 30
 		local x = screenX / 2 - width / 2
 		
-		exports.cr_ui:drawRoundedRectangle {
-			position = {
-				x = x,
-				y = y
-			},
-			size = {
-				x = width,
-				y = height
-			},
-			
-			color = theme.GRAY[900],
-			alpha = 0.9,
-			radius = 10
-		}
+		dxDrawRectangle(x, y, width, height, exports.cr_ui:rgba(theme.GRAY[900], 0.9))
 		dxDrawText(title, x, y, width + x, height + y, tocolor(245, 245, 245), 1, fonts.font1, "center", "center", false, false, false, true)
 
 		local y = y + (height + 5)
 		local width, height = dxGetTextWidth(remaining, 1, fonts.font2) + 25, 60
 		local x, y = screenX / 2 - width / 2, screenY - (height * 2)
 		
-		exports.cr_ui:drawRoundedRectangle {
-			position = {
-				x = x,
-				y = y
-			},
-			size = {
-				x = width,
-				y = height
-			},
-			
-			color = theme.GRAY[900],
-			alpha = 0.9,
-			radius = 10
-		}
+		dxDrawRectangle(x, y, width, height, exports.cr_ui:rgba(theme.GRAY[900]))
 		dxDrawText(remaining, x, y, width + x, height + y, tocolor(215, 215, 215), 0.8, fonts.font2, "center", "center")
 	else
 		currentSecs = "Hesaplanıyor..."

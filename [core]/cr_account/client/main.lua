@@ -2,6 +2,10 @@ screenSize = Vector2(guiGetScreenSize())
 
 theme = exports.cr_ui:useTheme()
 fonts = exports.cr_ui:useFonts()
+iconFont = exports.cr_fonts:getFont("FontAwesome", 10)
+
+loading = false
+passedIntro = false
 
 music = {
 	sound = nil,
@@ -9,6 +13,15 @@ music = {
 	index = 0,
 	beginning = false,
 	paused = false,
+}
+
+selectedTextBox = ""
+textBoxes = {
+	["login_username"] = {"", false, 1},
+	["login_password"] = {"", false, 1},
+	["register_username"] = {"", false, 2},
+	["register_password"] = {"", false, 2},
+	["register_password_again"] = {"", false, 2}
 }
 
 function playMusic()
@@ -26,26 +39,9 @@ function playMusic()
 	end
 end
 
-function convertMusicTime(time)
-    local minutes = math.floor(math.modf(time, 3600) / 60)
-    local seconds = math.floor(math.fmod(time, 60))
-    return string.format("%02d:%02d", minutes, seconds)
-end
-
-function secondsToTimeDesc(seconds)
-	if seconds then
-		local results = {}
-		local sec = (seconds % 60)
-		local min = math.floor((seconds % 3600) / 60)
-		local hou = math.floor((seconds % 86400) / 3600)
-		local day = math.floor(seconds / 86400)
-		
-		if day > 0 then table.insert(results, day .. (day == 1 and " gün" or " gün")) end
-		if hou > 0 then table.insert(results, hou .. (hou == 1 and " saat" or " saat")) end
-		if min > 0 then table.insert(results, min .. (min == 1 and " dakika" or " dakika")) end
-		if sec > 0 then table.insert(results, sec .. (sec == 1 and " saniye" or " saniye")) end
-		
-		return string.reverse(table.concat(results, ", "):reverse():gsub(" ,", " ev ", 1))
-	end
-	return ""
+function isKeyPressed(key)
+    if isConsoleActive() or isMainMenuActive() then
+        return false
+    end
+    return getKeyState(key)
 end

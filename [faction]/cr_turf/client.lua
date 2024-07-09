@@ -11,23 +11,9 @@ setElementData(localPlayer, "turf", false)
 setTimer(function()
 	local turf = getElementData(localPlayer, "turf")
 	if turf then
-		exports.cr_ui:drawRoundedRectangle {
-			position = {
-				x = ((screenSize.x - dxGetTextWidth(turf.teamName, 1, fonts.UbuntuRegular.h3)) / 2) - 40,
-				y = screenY - 60
-			},
-			size = {
-				x = dxGetTextWidth(turf.teamName, 1, fonts.UbuntuRegular.h3) + 80,
-				y = sizeY
-			},
-
-			color = theme.GRAY[900],
-			alpha = 1,
-			radius = 10
-		}
-		
+		dxDrawRectangle(((screenSize.x - dxGetTextWidth(turf.teamName, 1, fonts.UbuntuRegular.h3)) / 2) - 40, screenY - 60, dxGetTextWidth(turf.teamName, 1, fonts.UbuntuRegular.h3) + 80, sizeY, exports.cr_ui:rgba(theme.GRAY[900]))
 		dxDrawText(turf.teamName, screenX, screenY - 47, screenX + sizeX, 0, tocolor(255, 255, 255, 255), 1, fonts.UbuntuRegular.h3, "center")
-		exports.cr_ui:dxDrawFramedText("%" .. turf.occupier, screenX, screenY + 5, screenX + sizeX, 0, tocolor(255, 255, 255, 255), 1, fonts.UbuntuBold.h4, "center")
+		exports.cr_ui:dxDrawFramedText("%" .. turf.occupier, screenX, screenY + 5, screenX + sizeX, 0, tocolor(255, 255, 255, 255), 1, fonts.UbuntuBold.h3, "center")
 	end
 end, 0, 0)
 

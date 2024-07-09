@@ -171,16 +171,20 @@ addEventHandler("market.buyLuckBox", root, function(id, volume, price)
 	if client ~= source then return end
 	if getElementData(source, "balance") >= price then
 		if price > 0 then
-			if exports.cr_items:hasSpaceForItem(source, luckBoxes[id][1], 1) then
-				for i = 1, volume do
-					give, error = exports.cr_global:giveItem(source, luckBoxes[id][1], 1)
+			if volume < 100 then
+				if exports.cr_items:hasSpaceForItem(source, luckBoxes[id][1], 1) then
+					for i = 1, volume do
+						give, error = exports.cr_global:giveItem(source, luckBoxes[id][1], 1)
+					end
+					takeBalance(source, price)
+					exports.cr_infobox:addBox(source, "success", "Başarıyla " .. exports.cr_global:formatMoney(price) .. " TL karşılığında " .. volume .. " adet " .. luckBoxes[id][2] .. " satın aldınız.")
+					exports.cr_global:sendMessageToAdmins("[MARKET] " .. getPlayerName(source):gsub("_", " ") .. " isimli oyuncu " .. exports.cr_global:formatMoney(price) .. " TL karşılığında " .. volume .. " adet " .. luckBoxes[id][2] .. " satın aldı.")
+					exports.cr_discord:sendMessage("market-log", "[MARKET] " .. getPlayerName(source):gsub("_", " ") .. " isimli oyuncu " .. exports.cr_global:formatMoney(price) .. " TL karşılığında " .. volume .. " adet " .. luckBoxes[id][2] .. " satın aldı.")
+				else
+					exports.cr_infobox:addBox(source, "error", "Envanteriniz dolu.")
 				end
-				takeBalance(source, price)
-				exports.cr_infobox:addBox(source, "success", "Başarıyla " .. exports.cr_global:formatMoney(price) .. " TL karşılığında " .. volume .. " adet " .. luckBoxes[id][2] .. " satın aldınız.")
-				exports.cr_global:sendMessageToAdmins("[MARKET] " .. getPlayerName(source):gsub("_", " ") .. " isimli oyuncu " .. exports.cr_global:formatMoney(price) .. " TL karşılığında " .. volume .. " adet " .. luckBoxes[id][2] .. " satın aldı.")
-				exports.cr_discord:sendMessage("market-log", "[MARKET] " .. getPlayerName(source):gsub("_", " ") .. " isimli oyuncu " .. exports.cr_global:formatMoney(price) .. " TL karşılığında " .. volume .. " adet " .. luckBoxes[id][2] .. " satın aldı.")
 			else
-				exports.cr_infobox:addBox(source, "error", "Envanteriniz dolu.")
+				exports.cr_infobox:addBox(source, "error", "Maksimum 100 adet şans kutusu satın alabilirsiniz.")
 			end
 		end
 	else

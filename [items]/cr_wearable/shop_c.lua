@@ -12,7 +12,7 @@ local setPosition = false;
 
 local shopPed = createPed(82, 2015.826171875, -1408.4287109375, 16.9921875, 180)
 shopPed:setData("name", "Aksesuar Mağazası")
-shopPed:setData("nametag", true)
+shopPed:setData("talk", 1)
 shopPed.frozen = true
 shopPed.dimension = 0
 shopPed.interior = 0
@@ -122,7 +122,7 @@ setTimer(
 			if getKeyState("mouse1") and lastClick+200 <= getTickCount() then
 				lastClick = getTickCount();
 				if selectedWearable ~= 0 then
-					triggerServerEvent("wearable.buyItem", localPlayer, localPlayer, tempObject.model, price);
+					triggerServerEvent("wearable.buyItem", localPlayer, tempObject.model, price);
 					shownWShop = false;
 					currentRow = 1;
 					selectedWearable = 0;

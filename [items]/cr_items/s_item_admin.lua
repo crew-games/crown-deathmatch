@@ -122,7 +122,7 @@ function delAllItemInstances(thePlayer,commandName, itemID, itemValue)
 				local hiddenAdmin = getElementData(thePlayer, "hiddenadmin")
 				local adminTitle = exports.cr_global:getPlayerAdminTitle(thePlayer)
 				restartResource(theResource2)
-				setTimer(function () 
+				setTimer(function() 
 					restartResource(theResource1)
 					outputChatBox("All the item instances (Item ID #" .. itemID .. ", ItemValue: " .. itemValue .. ") have been deleted.", thePlayer, 0, 255, 0)
 					if hiddenAdmin == 0 then
@@ -165,7 +165,7 @@ function deleteAllItemsFromAnInterior(thePlayer, commandName, intID , dayOld, re
 				--outputChatBox(" However, the items still exist temporarily in game. It's strongly recommended to lock or delete this interior ASAP after executing this command.", thePlayer, 255, 255, 0)
 				if restartRes == 1 and getResourceFromName("cr_item-world") then
 					executeCommandHandler("saveall", thePlayer)
-					setTimer(function () 
+					setTimer(function() 
 						outputChatBox(" Server is cleaning up world items, please standby!", root)
 						restartResource(getResourceFromName("cr_item-world"))
 					end, 10000, 1)

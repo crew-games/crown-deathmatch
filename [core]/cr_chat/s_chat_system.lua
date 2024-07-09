@@ -1200,20 +1200,16 @@ function localOOC(thePlayer, commandName, ...)
 
 			if exports.cr_integration:isPlayerSupporter(element) and element:getData("duty_supporter") == 1 and element:getData("hiddenadmin") == 0 and not element:getData("supervising") then
 				sending = "#ccffff[OOC]#00FF00 " .. playerName .. "#ccffff: (( " .. message .. " ))"
-				exports.cr_discord:sendMessage("oocchat-log","[OOC] " .. playerName .. ": " .. message .. "")
 			end
 			
 			if exports.cr_integration:isPlayerTrialAdmin(element) and element:getData("duty_admin") == 1 and element:getData("hiddenadmin") == 0 and not element:getData("supervising") then
 				sending = "#ccffff[OOC]#FF0000 " .. playerName .. "#ccffff: (( " .. message .. " ))"
-				exports.cr_discord:sendMessage("oocchat-log","[OOC] " .. playerName .. ": " .. message .. "")
 			end
 			
 			if getElementData(thePlayer, "supervisorBchat") == false or nil then
 				result, affectedElements = exports.cr_global:sendLocalText(thePlayer, sending, r,b,g)
-				exports.cr_discord:sendMessage("oocchat-log","[OOC] " .. playerName .. ": " .. message .. "")
 			else
 				result, affectedElements = exports.cr_global:sendLocalText(thePlayer, sending, r,b,g)
-				exports.cr_discord:sendMessage("oocchat-log","[OOC] " .. playerName .. ": " .. message .. "")
 			end
 		end
 	end

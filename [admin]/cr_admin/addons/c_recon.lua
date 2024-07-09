@@ -1,4 +1,4 @@
-addEventHandler("onClientChangeChar", root, function ()
+addEventHandler("onClientChangeChar", root, function()
 		local enabled = getElementData(localPlayer, "supervising")
 		if (enabled == true) then
 			setElementData(localPlayer, "supervising", false)

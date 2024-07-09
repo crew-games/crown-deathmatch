@@ -1,5 +1,5 @@
 addEventHandler("onClientElementStreamIn", root,
-	function ()
+	function()
 		if getElementType(source) == "player" then
 			setPedVoice(source, "PED_TYPE_DISABLED")
 		end

@@ -307,11 +307,11 @@ function givePlayerGun(thePlayer, commandName, targetPlayer, ...)
 							outputChatBox("You've received (x" .. count .. ") " ..  getWeaponNameFromID(weaponID) .. " from " .. adminTitle .. " " .. getPlayerName(thePlayer) .. ".", targetPlayer, 0, 255, 0)
 							--Send adm warning
 							exports.cr_global:sendMessageToAdmins("[ADM] " .. tostring(adminTitle) .. " " .. getPlayerName(thePlayer) .. " gave " .. targetPlayerName .. " (x" .. count .. ") " .. getWeaponNameFromID(weaponID) .. " with serial '" .. allSerials .. "'")
-							exports.cr_discord:sendMessage("makegun-log","[MAKEGUN] " .. exports.cr_global:getPlayerFullAdminTitle(thePlayer) .. " isimli yetkili " .. targetPlayerName .. " adlı kişiye (" .. count .. ") adet (" ..  getWeaponNameFromID(weaponID) .. ") verdi.")
+							exports.cr_discord:sendMessage("makegun-log","[MAKEGUN] " .. exports.cr_global:getPlayerFullAdminTitle(thePlayer) .. " isimli yetkili " .. targetPlayerName .. " isimli kişiye (" .. count .. ") adet (" ..  getWeaponNameFromID(weaponID) .. ") verdi.")
 							exports.cr_discord:sendMessage("makegun-log","[SERIAL] " .. allSerials .. " ")
 						else -- If Gizli Yetkili
 							outputChatBox("[MAKEGUN] You have given (x" .. count .. ") " ..  getWeaponNameFromID(weaponID) .. " to " .. targetPlayerName .. " with serials '" .. allSerials, thePlayer, 0, 255, 0)
-							exports.cr_discord:sendMessage("makegun-log","[MAKEGUN] " .. exports.cr_global:getPlayerFullAdminTitle(thePlayer) .. " isimli yetkili " .. targetPlayerName .. " adlı kişiye (" .. count .. ") adet (" ..  getWeaponNameFromID(weaponID) .. ") verdi.")
+							exports.cr_discord:sendMessage("makegun-log","[MAKEGUN] " .. exports.cr_global:getPlayerFullAdminTitle(thePlayer) .. " isimli yetkili " .. targetPlayerName .. " isimli kişiye (" .. count .. ") adet (" ..  getWeaponNameFromID(weaponID) .. ") verdi.")
 							exports.cr_discord:sendMessage("makegun-log","[SERIAL] (" .. allSerials .. ") ")
                             
 
@@ -420,9 +420,9 @@ function givePlayerGunAmmo(thePlayer, commandName, targetPlayer, ...)
 							outputChatBox("You've received (x" .. count .. ") " .. getWeaponNameFromID(weaponID) .. " ammopacks (" .. ammo .. " bullets each) from " .. adminTitle .. " " .. getPlayerName(thePlayer), targetPlayer, 0, 255, 0)
 							--Send adm warning
 							exports.cr_global:sendMessageToAdmins("[ADM] " .. tostring(adminTitle) .. " " .. getPlayerName(thePlayer) .. " gave (x" .. count .. ") " .. getWeaponNameFromID(weaponID) .. " ammopacks (" .. ammo .. " bullets each) to " .. targetPlayerName)
-							exports.cr_discord:sendMessage("makeammo-log","[MAKEAMMO] " .. exports.cr_global:getPlayerFullAdminTitle(thePlayer) .. " isimli yetkili " .. targetPlayerName .. " adlı kişiye (" .. ammo .. ") jarjör (" ..  getWeaponNameFromID(weaponID) .. ") mermisi verdi.")
+							exports.cr_discord:sendMessage("makeammo-log","[MAKEAMMO] " .. exports.cr_global:getPlayerFullAdminTitle(thePlayer) .. " isimli yetkili " .. targetPlayerName .. " isimli kişiye (" .. ammo .. ") jarjör (" ..  getWeaponNameFromID(weaponID) .. ") mermisi verdi.")
 						else -- If Gizli Yetkili
-							exports.cr_discord:sendMessage("makeammo-log","[MAKEAMMO] " .. exports.cr_global:getPlayerFullAdminTitle(thePlayer) .. " isimli yetkili " .. targetPlayerName .. " adlı kişiye (" .. ammo .. ") jarjör (" ..  getWeaponNameFromID(weaponID) .. ") mermisi verdi.")
+							exports.cr_discord:sendMessage("makeammo-log","[MAKEAMMO] " .. exports.cr_global:getPlayerFullAdminTitle(thePlayer) .. " isimli yetkili " .. targetPlayerName .. " isimli kişiye (" .. ammo .. ") jarjör (" ..  getWeaponNameFromID(weaponID) .. ") mermisi verdi.")
 							outputChatBox("[MAKEAMMO] You have given (x" .. count .. ") " .. getWeaponNameFromID(weaponID) .. " ammopacks (" .. ammo .. " bullets each) to " .. targetPlayerName .. ".", thePlayer, 0, 255, 0)
 							--Inform Player
 							outputChatBox("You've received (x" .. count .. ") " .. getWeaponNameFromID(weaponID) .. " ammopacks (" .. ammo .. " bullets each) from Gizli Yetkili.", targetPlayer, 0, 255, 0)
@@ -578,19 +578,19 @@ function givePlayerItem(thePlayer, commandName, targetPlayer, itemID, ...)
 						local success, reason = exports.cr_global:giveItem(targetPlayer, itemID, itemValue)
 						local adminTitle = exports.cr_global:getPlayerAdminTitle(thePlayer)
 						if success then
-							outputChatBox("[!]#FFFFFF " .. targetPlayerName .. " isimli kişiye " .. name .. " adlı eşya " .. itemValue .. " adet verildi.", thePlayer, 0, 255, 0, true)
+							outputChatBox("[!]#FFFFFF " .. targetPlayerName .. " isimli kişiye " .. name .. " isimli eşya " .. itemValue .. " adet verildi.", thePlayer, 0, 255, 0, true)
 							exports.cr_discord:sendMessage("giveitem-log","[GIVEITEM] " ..  tostring(adminTitle) .. " " ..  getPlayerName(thePlayer)  .. " isimli yetkili " ..  targetPlayerName  .. " isimli kişiye (" ..  name  .. " - " .. itemValue .. ") verdi.")
 					
 							triggerClientEvent(targetPlayer, "item:updateclient", targetPlayer)
 							local hiddenAdmin = getElementData(thePlayer, "hiddenadmin")
 							local adminTitle = exports.cr_global:getPlayerAdminTitle(thePlayer)
 							if (hiddenAdmin==0) then
-								outputChatBox("[!]#FFFFFF " ..  tostring(adminTitle) .. " " .. getPlayerName(thePlayer) .. " isimli yetkili sana " .. name .. " adlı eşyayı " .. itemValue .. " adet verdi.", targetPlayer, 0, 255, 0, true)
+								outputChatBox("[!]#FFFFFF " ..  tostring(adminTitle) .. " " .. getPlayerName(thePlayer) .. " isimli yetkili sana " .. name .. " isimli eşyayı " .. itemValue .. " adet verdi.", targetPlayer, 0, 255, 0, true)
 							else
-								outputChatBox("[!]#FFFFFF Gizli yetkili " .. name .. " adlı eşyayı " .. itemValue .. " adet olarak verdi.", targetPlayer, 0, 255, 0, true)
+								outputChatBox("[!]#FFFFFF Gizli yetkili " .. name .. " isimli eşyayı " .. itemValue .. " adet olarak verdi.", targetPlayer, 0, 255, 0, true)
 							end
 						else
-							outputChatBox("[!]#FFFFFF " .. targetPlayerName .. " adlı kişiye " .. name .. " adlı eşya verilemedi. Sebep: (" .. tostring(reason) .. ")", thePlayer, 255, 0, 0, true)
+							outputChatBox("[!]#FFFFFF " .. targetPlayerName .. " isimli kişiye " .. name .. " isimli eşya verilemedi. Sebep: (" .. tostring(reason) .. ")", thePlayer, 255, 0, 0, true)
 						end
 					else
 						outputChatBox("[!]#FFFFFF Geçersiz ID.", thePlayer, 255, 0, 0, true)
@@ -673,7 +673,7 @@ function makeGenericItem(thePlayer, commandName, price, quantity, ...)
 				return false
 			end
 
-			local success, reason = setTimer (function ()
+			local success, reason = setTimer (function()
 				exports.cr_global:giveItem(thePlayer, 80, itemValue)
 			end, 250, quantity)
 			if success then
@@ -748,7 +748,7 @@ function setPlayerHealth(thePlayer, commandName, targetPlayer, health)
 					outputChatBox("Player " .. targetPlayerName .. " has received " .. health .. " Health.", thePlayer, 0, 255, 0)
 					triggerEvent("onPlayerHeal", targetPlayer, true)
 					exports.cr_logs:dbLog(thePlayer, 4, targetPlayer, "SETHP " .. health)
-					exports.cr_discord:sendMessage("sethp-log","[SETHP] " .. exports.cr_global:getPlayerFullAdminTitle(thePlayer) .. " isimli yetkili " .. targetPlayerName .. " adlı karakterin sağlık durumunu (" .. health .. ") olarak güncelledi.")
+					exports.cr_discord:sendMessage("sethp-log","[SETHP] " .. exports.cr_global:getPlayerFullAdminTitle(thePlayer) .. " isimli yetkili " .. targetPlayerName .. " isimli karakterin sağlık durumunu (" .. health .. ") olarak güncelledi.")
 				end
 			end
 		end
@@ -779,7 +779,7 @@ function adminHeal(thePlayer, commandName, targetPlayer)
 			outputChatBox("[!]#FFFFFF " .. exports.cr_global:getPlayerFullAdminTitle(thePlayer) .. " isimli yetkili sizin ihtiyaçlarınızı fulledi.", targetPlayer, 0, 0, 255, true)
 			triggerEvent("onPlayerHeal", targetPlayer, true)
 			exports.cr_logs:dbLog(thePlayer, 4, targetPlayer, "AHEAL " .. health)
-			exports.cr_discord:sendMessage("aheal-log","[AHEAL] " .. exports.cr_global:getPlayerFullAdminTitle(thePlayer) .. " isimli yetkili " .. targetPlayerName .. " adlı karakterin açlık ve susuzluk ihtiyaçlarını fulledi.")
+			exports.cr_discord:sendMessage("aheal-log","[AHEAL] " .. exports.cr_global:getPlayerFullAdminTitle(thePlayer) .. " isimli yetkili " .. targetPlayerName .. " isimli karakterin açlık ve susuzluk ihtiyaçlarını fulledi.")
 		end
 	else
 		outputChatBox("[!]#FFFFFF Bu komutu kullanabilmek için gerekli yetkiye sahip değilsiniz.", thePlayer, 255, 0, 0, true)
@@ -808,7 +808,7 @@ function setPlayerArmour(thePlayer, theCommand, targetPlayer, armor)
 								local setArmor = setPedArmor(targetPlayer, tonumber(armor))
 								outputChatBox("Player " .. targetPlayerName .. " has received " .. armor .. " Armor.", thePlayer, 0, 255, 0)
 								exports.cr_logs:dbLog(thePlayer, 4, tagetPlayer, "SETARMOR " ..tostring(armor))
-								exports.cr_discord:sendMessage("setarmor-log","[SETARMOR] " .. exports.cr_global:getPlayerFullAdminTitle(thePlayer) .. " isimli yetkili " .. targetPlayerName .. " adlı karakterin zırh durumunu (" .. armor .. ") olarak güncelledi.")
+								exports.cr_discord:sendMessage("setarmor-log","[SETARMOR] " .. exports.cr_global:getPlayerFullAdminTitle(thePlayer) .. " isimli yetkili " .. targetPlayerName .. " isimli karakterin zırh durumunu (" .. armor .. ") olarak güncelledi.")
 							else
 								outputChatBox("This player is not in a law enforcement faction. Contact a lead+ administrator to set armor.", thePlayer, 255, 0, 0)
 							end
@@ -997,47 +997,79 @@ function slapPlayer(thePlayer, commandName, targetPlayer)
 end
 addCommandHandler("slap", slapPlayer, false, false)
 
-function setMoney(thePlayer, commandName, target, money, ...)
-	if exports.cr_integration:isPlayerSeniorAdmin(thePlayer) then
-		if not (target) or not money or not tonumber(money) or not (...) then
-			outputChatBox("KULLANIM: /" .. commandName .. " [Karakter Adı / ID] [Miktar] [Açıklama]", thePlayer, 255, 194, 14)
-		else
-			local username = getPlayerName(thePlayer)
-			local targetPlayer, targetPlayerName = exports.cr_global:findPlayerByPartialNick(thePlayer, target)
+function giveMoney(thePlayer, commandName, targetPlayer, amount, ...)
+    if exports.cr_integration:isPlayerGeneralAdmin(thePlayer) then
+		if targetPlayer and amount and tonumber(amount) and tonumber(amount) > 0 and (...) then
+			amount = math.floor(amount)
+            local reason = table.concat({...}, " ")
+            if amount <= 100000000 then
+                local targetPlayer, targetPlayerName = exports.cr_global:findPlayerByPartialNick(thePlayer, targetPlayer)
+                if targetPlayer then
+                    if getElementData(targetPlayer, "loggedin") == 1 then
+                        if exports.cr_global:giveMoney(targetPlayer, amount) then
+							outputChatBox("[!]#FFFFFF " .. targetPlayerName .. " isimli oyuncuya $" .. exports.cr_global:formatMoney(amount) .. " verildi.", thePlayer, 0, 255, 0, true)
+							outputChatBox("[!]#FFFFFF " .. exports.cr_global:getPlayerFullAdminTitle(thePlayer) .. " isimli yetkili size $" .. exports.cr_global:formatMoney(amount) .. " verdi.", targetPlayer, 0, 0, 255, true)
+							
+							exports.cr_global:sendMessageToAdmins("[ADM] " .. exports.cr_global:getPlayerFullAdminTitle(thePlayer) .. " isimli yetkili " .. targetPlayerName .. " isimli oyuncuya $" .. exports.cr_global:formatMoney(amount) .. " verdi.")
+							exports.cr_global:sendMessageToAdmins("[ADM] Sebeb: " .. reason)
+							
+							exports.cr_discord:sendMessage("givemoney-log", exports.cr_global:getPlayerFullAdminTitle(thePlayer) .. " isimli yetkili " .. targetPlayerName .. " isimli oyuncuya $" .. exports.cr_global:formatMoney(amount) .. " verdi.\nSebeb: " .. reason)
+						else
+							outputChatBox("[!]#FFFFFF Bir sorun oluştu.", thePlayer, 255, 0, 0, true)
+							playSoundFrontEnd(thePlayer, 4)
+						end
+                    else
+                        outputChatBox("[!]#FFFFFF Bu oyuncu karakterine giriş yapmadığı için işlem gerçekleşmedi.", thePlayer, 255, 0, 0, true)
+                        playSoundFrontEnd(thePlayer, 4)
+                    end
+                end
+            else
+                outputChatBox("[!]#FFFFFF Birine en fazla $100,000,000 verebilirsiniz.", thePlayer, 255, 0, 0, true)
+                playSoundFrontEnd(thePlayer, 4)
+            end
+        else
+            outputChatBox("KULLANIM: /" .. commandName .. " [Karakter Adı / ID] [Miktar] [Sebeb]", thePlayer, 255, 194, 14)
+        end
+	else
+		outputChatBox("[!]#FFFFFF Bu komutu kullanabilmek için gerekli yetkiye sahip değilsiniz.", thePlayer, 255, 0, 0, true)
+		playSoundFrontEnd(thePlayer, 4)
+	end
+end
+addCommandHandler("givemoney", giveMoney, false, false)
 
-			if targetPlayer then
-				money = tonumber(money) or 0
-				if money and money > 100000000 then
-					outputChatBox("[!]#FFFFFF Güvenlik nedeniyle, bir oyuncuya tek seferde yalnızca 10,000,000$'ın altında para vermenize izin verilmektedir.", thePlayer, 255, 0, 0, true)
-					return false
-				end
-
-				if not exports.cr_global:setMoney(targetPlayer, money) then
-					outputChatBox("Could not set that amount.", thePlayer, 255, 0, 0)
-					return false
-				end
-
-				exports.cr_logs:dbLog(thePlayer, 4, targetPlayer, "SETMONEY " .. money)
-
-
-				local amount = exports.cr_global:formatMoney(money)
-				reason = table.concat({...}, " ")
-				outputChatBox("#f0f0f0(( " .. targetPlayerName .. " isimli oyuncunun parası " .. amount .. "$ olarak ayarlanmıştır. ))", thePlayer, 0, 255, 0, true)
-				outputChatBox("#f0f0f0(( " .. username .. " isimli yetkili paranızı " .. amount .. "$ olarak değiştirdi. ))", targetPlayer, 0, 255, 0, true)
-				outputChatBox("#f0f0f0(( Gerekçe: " .. reason .. " ))", targetPlayer, 0, 255, 0, true)
-				exports.cr_discord:sendMessage("givemoney-log","[SETMONEY] " .. exports.cr_global:getPlayerFullAdminTitle(thePlayer) .. " isimli yetkili " .. targetPlayerName .. " isimli kişinin parasını (" .. amount .. "$) olarak güncelledi.")
-				local targetUsername = string.gsub(getElementData(targetPlayer, "account:username"), "_", " ")
-				targetUsername = mysql:escape_string(targetUsername)
-				local targetCharacterName = mysql:escape_string(targetPlayerName)
-
-
-				if tonumber(money) >= 5000 then
-					exports.cr_global:sendMessageToAdmins("[SETMONEY] Yetkili " .. username .. " (" .. targetUsername .. ") " .. targetCharacterName .. " isimli oyuncunun parasını " .. amount .. "$ olarak değiştirmiştir. (Gerekçe: " .. reason .. ").")
-				else
-					exports.cr_global:sendMessageToAdmins("[SETMONEY] Yetkili " .. username .. " (" .. targetUsername .. ") " .. targetCharacterName .. " isimli oyuncunun parasını " .. amount .. "$ olarak değiştirmiştir. (Gerekçe: " .. reason .. ").")
-				end
-			end
-		end
+function setMoney(thePlayer, commandName, targetPlayer, amount, ...)
+    if exports.cr_integration:isPlayerGeneralAdmin(thePlayer) then
+		if targetPlayer and amount and tonumber(amount) and tonumber(amount) > 0 and (...) then
+			amount = math.floor(amount)
+            local reason = table.concat({...}, " ")
+            if amount <= 100000000 then
+                local targetPlayer, targetPlayerName = exports.cr_global:findPlayerByPartialNick(thePlayer, targetPlayer)
+                if targetPlayer then
+                    if getElementData(targetPlayer, "loggedin") == 1 then
+                        if exports.cr_global:setMoney(targetPlayer, amount) then
+							outputChatBox("[!]#FFFFFF " .. targetPlayerName .. " isimli oyuncunun parası $" .. exports.cr_global:formatMoney(amount) .. " olarak değiştirilmiştir.", thePlayer, 0, 255, 0, true)
+							outputChatBox("[!]#FFFFFF " .. exports.cr_global:getPlayerFullAdminTitle(thePlayer) .. " isimli yetkili paranızı $" .. exports.cr_global:formatMoney(amount) .. " olarak değiştirdi.", targetPlayer, 0, 0, 255, true)
+							
+							exports.cr_global:sendMessageToAdmins("[ADM] " .. exports.cr_global:getPlayerFullAdminTitle(thePlayer) .. " isimli yetkili " .. targetPlayerName .. " isimli oyuncunun parasını $" .. exports.cr_global:formatMoney(amount) .. " olarak değiştirdi.")
+							exports.cr_global:sendMessageToAdmins("[ADM] Sebeb: " .. reason)
+							
+							exports.cr_discord:sendMessage("setmoney-log", exports.cr_global:getPlayerFullAdminTitle(thePlayer) .. " isimli yetkili " .. targetPlayerName .. " isimli oyuncunun parasını $" .. exports.cr_global:formatMoney(amount) .. " olarak değiştirdi.\nSebeb: " .. reason)
+						else
+							outputChatBox("[!]#FFFFFF Bir sorun oluştu.", thePlayer, 255, 0, 0, true)
+							playSoundFrontEnd(thePlayer, 4)
+						end
+                    else
+                        outputChatBox("[!]#FFFFFF Bu oyuncu karakterine giriş yapmadığı için işlem gerçekleşmedi.", thePlayer, 255, 0, 0, true)
+                        playSoundFrontEnd(thePlayer, 4)
+                    end
+                end
+            else
+                outputChatBox("[!]#FFFFFF Birine en fazla $100,000,000 verebilirsiniz.", thePlayer, 255, 0, 0, true)
+                playSoundFrontEnd(thePlayer, 4)
+            end
+        else
+            outputChatBox("KULLANIM: /" .. commandName .. " [Karakter Adı / ID] [Miktar] [Sebeb]", thePlayer, 255, 194, 14)
+        end
 	else
 		outputChatBox("[!]#FFFFFF Bu komutu kullanabilmek için gerekli yetkiye sahip değilsiniz.", thePlayer, 255, 0, 0, true)
 		playSoundFrontEnd(thePlayer, 4)
@@ -1045,54 +1077,40 @@ function setMoney(thePlayer, commandName, target, money, ...)
 end
 addCommandHandler("setmoney", setMoney, false, false)
 
-function giveMoney(thePlayer, commandName, target, money, ...) 
-	if exports.cr_integration:isPlayerSeniorAdmin(thePlayer) then
-		if not (target) or not money or not (...) then
-			outputChatBox("KULLANIM: /" .. commandName .. " [Karakter Adı / ID] [Miktar] [Açıklama]", thePlayer, 255, 194, 14)
-		else
-			local username = getPlayerName(thePlayer)
-			local targetPlayer, targetPlayerName = exports.cr_global:findPlayerByPartialNick(thePlayer, target)
-
-			if targetPlayer then
-				money = tonumber(money) or 0
-				if money and money > 100000000 then
-					outputChatBox("[!]#FFFFFF Güvenlik nedeniyle, bir oyuncuya tek seferde yalnızca 100,000,000$'ın altında para vermenize izin verilmektedir.", thePlayer, 255, 0, 0, true)
-					return false
-				end
-
-				if not exports.cr_global:giveMoney(targetPlayer, money) then
-					outputChatBox("Could not give player that amount.", thePlayer, 255, 0, 0)
-					return false
-				end
-
-				exports.cr_logs:dbLog(thePlayer, 4, targetPlayer, "GIVEMONEY " ..money)
-
-				local amount = exports.cr_global:formatMoney(money)
-				reason = table.concat({...}, " ")
-				outputChatBox("You have given " .. targetPlayerName .. " $" .. amount .. ".", thePlayer)
-				outputChatBox("Admin " .. username .. " has given you: $" .. amount .. ".", targetPlayer)
-				outputChatBox("Reason: " .. reason .. ".", targetPlayer)
-				exports.cr_discord:sendMessage("givemoney-log","[GIVEMONEY] " .. exports.cr_global:getPlayerFullAdminTitle(thePlayer) .. " isimli yetkili " .. targetPlayerName .. " isimli kişiye (" .. amount .. "$) para oluşturdu.")
-
-				local targetUsername = string.gsub(getElementData(targetPlayer, "account:username"), "_", " ")
-				targetUsername = mysql:escape_string(targetUsername)
-				local targetCharacterName = mysql:escape_string(targetPlayerName)
-
-
-				if tonumber(money) >= 5000 then
-					exports.cr_global:sendMessageToAdmins("[GIVEMONEY] Admin " .. username .. " has given (" .. targetUsername .. ") " .. targetCharacterName .. " $" .. amount .. " (" .. reason .. ")")
-				else
-					exports.cr_global:sendMessageToAdmins("[GIVEMONEY] Admin " .. username .. " has given (" .. targetUsername .. ") " .. targetCharacterName .. " $" .. amount .. " (" .. reason .. ")")
-				end
-
-			end
-		end
+function takeMoney(thePlayer, commandName, targetPlayer, amount, ...)
+    if exports.cr_integration:isPlayerGeneralAdmin(thePlayer) then
+		if targetPlayer and amount and tonumber(amount) and tonumber(amount) > 0 and (...) then
+			amount = math.floor(amount)
+            local reason = table.concat({...}, " ")
+            local targetPlayer, targetPlayerName = exports.cr_global:findPlayerByPartialNick(thePlayer, targetPlayer)
+            if targetPlayer then
+                if getElementData(targetPlayer, "loggedin") == 1 then
+                    if exports.cr_global:takeMoney(targetPlayer, amount) then
+						outputChatBox("[!]#FFFFFF " .. targetPlayerName .. " isimli oyuncunun parasından $" .. exports.cr_global:formatMoney(amount) .. " kesildi.", thePlayer, 0, 255, 0, true)
+						outputChatBox("[!]#FFFFFF " .. exports.cr_global:getPlayerFullAdminTitle(thePlayer) .. " isimli yetkili paranızdan $" .. exports.cr_global:formatMoney(amount) .. " kesti.", targetPlayer, 0, 0, 255, true)
+						
+						exports.cr_global:sendMessageToAdmins("[ADM] " .. exports.cr_global:getPlayerFullAdminTitle(thePlayer) .. " isimli yetkili " .. targetPlayerName .. " isimli oyuncunun parasından $" .. exports.cr_global:formatMoney(amount) .. " kesti.")
+						exports.cr_global:sendMessageToAdmins("[ADM] Sebeb: " .. reason)
+						
+						exports.cr_discord:sendMessage("takemoney-log", exports.cr_global:getPlayerFullAdminTitle(thePlayer) .. " isimli yetkili " .. targetPlayerName .. " isimli oyuncunun parasından $" .. exports.cr_global:formatMoney(amount) .. " kesti.\nSebeb: " .. reason)
+					else
+						outputChatBox("[!]#FFFFFF Bir sorun oluştu.", thePlayer, 255, 0, 0, true)
+						playSoundFrontEnd(thePlayer, 4)
+					end
+                else
+                    outputChatBox("[!]#FFFFFF Bu oyuncu karakterine giriş yapmadığı için işlem gerçekleşmedi.", thePlayer, 255, 0, 0, true)
+                    playSoundFrontEnd(thePlayer, 4)
+                end
+            end
+        else
+            outputChatBox("KULLANIM: /" .. commandName .. " [Karakter Adı / ID] [Miktar] [Sebeb]", thePlayer, 255, 194, 14)
+        end
 	else
 		outputChatBox("[!]#FFFFFF Bu komutu kullanabilmek için gerekli yetkiye sahip değilsiniz.", thePlayer, 255, 0, 0, true)
 		playSoundFrontEnd(thePlayer, 4)
 	end
 end
-addCommandHandler("givemoney", giveMoney, false, false)
+addCommandHandler("takemoney", takeMoney, false, false)
 
 function freezePlayer(thePlayer, commandName, target)
 	if (exports.cr_integration:isPlayerTrialAdmin(thePlayer) or exports.cr_integration:isPlayerSupporter(thePlayer)) then
@@ -1667,7 +1685,7 @@ function findCID(thePlayer, commandName, cid)
 end
 addCommandHandler("cid", findCID, false, false)
 
-function changeUsername(thePlayer, commandName, username, newUsername)
+function setUsername(thePlayer, commandName, username, newUsername)
     if exports.cr_integration:isPlayerManager(thePlayer) then
         if username and newUsername then
             dbQuery(function(qh)
@@ -1676,7 +1694,7 @@ function changeUsername(thePlayer, commandName, username, newUsername)
                     for index, row in ipairs(res) do
                         dbExec(mysql:getConnection(), "UPDATE accounts SET username = ? WHERE username = ?", newUsername, username)
                         outputChatBox("[!]#FFFFFF [" .. username .. "] isimli kullanıcının kullanıcı adı [" .. newUsername .. "] olarak değiştirildi.", thePlayer, 0, 255, 0, true)
-						exports.cr_discord:sendMessage("changeusername-log", "[CHANGE-USERNAME] " .. exports.cr_global:getPlayerFullAdminTitle(thePlayer) .. " isimli yetkili [" .. username .. "] isimli kullanıcının kullanıcı adını [" .. newUsername .. "] olarak değiştirdi.")
+						exports.cr_discord:sendMessage("setusername-log", "[SETUSERNAME] " .. exports.cr_global:getPlayerFullAdminTitle(thePlayer) .. " isimli yetkili [" .. username .. "] isimli kullanıcının kullanıcı adını [" .. newUsername .. "] olarak değiştirdi.")
                     end
                 else
                     outputChatBox("[!]#FFFFFF Kullanıcı bulunamadı.", thePlayer, 255, 0, 0, true)
@@ -1691,9 +1709,9 @@ function changeUsername(thePlayer, commandName, username, newUsername)
         playSoundFrontEnd(thePlayer, 4)
     end
 end
-addCommandHandler("changeusername", changeUsername, false, false)
+addCommandHandler("setusername", setUsername, false, false)
 
-function changePassword(thePlayer, commandName, username, password, passwordAgain)
+function setPassword(thePlayer, commandName, username, password, passwordAgain)
     if exports.cr_integration:isPlayerManager(thePlayer) then
         if username and password and passwordAgain then
 			if #password >= 6 and #password <= 32 then
@@ -1705,7 +1723,7 @@ function changePassword(thePlayer, commandName, username, password, passwordAgai
 								local password = string.upper(md5(password))
 								dbExec(mysql:getConnection(), "UPDATE accounts SET password = ? WHERE username = ?", password, username)
 								outputChatBox("[!]#FFFFFF [" .. username .. "] isimli kullanıcının şifresi değiştirildi.", thePlayer, 0, 255, 0, true)
-								exports.cr_discord:sendMessage("changepassword-log", "[CHANGE-PASSWORD] " .. exports.cr_global:getPlayerFullAdminTitle(thePlayer) .. " isimli yetkili [" .. username .. "] isimli kullanıcının şifresini değiştirdi.")
+								exports.cr_discord:sendMessage("setpassword-log", "[SETPASSWORD] " .. exports.cr_global:getPlayerFullAdminTitle(thePlayer) .. " isimli yetkili [" .. username .. "] isimli kullanıcının şifresini değiştirdi.")
 							end
 						else
 							outputChatBox("[!]#FFFFFF Kullanıcı bulunamadı.", thePlayer, 255, 0, 0, true)
@@ -1728,9 +1746,9 @@ function changePassword(thePlayer, commandName, username, password, passwordAgai
         playSoundFrontEnd(thePlayer, 4)
     end
 end
-addCommandHandler("changepassword", changePassword, false, false)
+addCommandHandler("setpassword", setPassword, false, false)
 
-function changeSerial(thePlayer, commandName, username, serial)
+function setSerial(thePlayer, commandName, username, serial)
     if exports.cr_integration:isPlayerManager(thePlayer) then
         if username and serial then
             dbQuery(function(qh)
@@ -1739,7 +1757,7 @@ function changeSerial(thePlayer, commandName, username, serial)
                     for index, row in ipairs(res) do
                         dbExec(mysql:getConnection(), "UPDATE accounts SET mtaserial = ? WHERE username = ?", serial, username)
                         outputChatBox("[!]#FFFFFF " .. username .. " isimli kullanıcının seriali [" .. serial .. "] olarak değiştirildi.", thePlayer, 0, 255, 0, true)
-						exports.cr_discord:sendMessage("changeserial-log", "[CHANGE-SERIAL] " .. exports.cr_global:getPlayerFullAdminTitle(thePlayer) .. " isimli yetkili [" .. username .. "] isimli kullanıcının serialini [" .. serial .. "] olarak değiştirdi.")
+						exports.cr_discord:sendMessage("setserial-log", "[SETSERIAL] " .. exports.cr_global:getPlayerFullAdminTitle(thePlayer) .. " isimli yetkili [" .. username .. "] isimli kullanıcının serialini [" .. serial .. "] olarak değiştirdi.")
                     end
                 else
                     outputChatBox("[!]#FFFFFF Kullanıcı bulunamadı.", thePlayer, 255, 0, 0, true)
@@ -1754,7 +1772,7 @@ function changeSerial(thePlayer, commandName, username, serial)
         playSoundFrontEnd(thePlayer, 4)
     end
 end
-addCommandHandler("changeserial", changeSerial, false, false)
+addCommandHandler("setserial", setSerial, false, false)
 
 function paraDagit(thePlayer, commandName, amount)
     if exports.cr_integration:isPlayerGeneralAdmin(thePlayer) then

@@ -71,7 +71,7 @@ end)
 
 addEventHandler("onPlayerDamage", root, function(attacker, weapon, bodypart, loss)
 	if bodypart == 9 then
-		if getElementInterior(source) == 3 and getElementDimension(source) == 313 then
+		if (getElementInterior(source) == 3 and getElementDimension(source) == 313) or (getElementInterior(source) == 3 and getElementDimension(source) == 352) then
 			killPed(source, attacker, weapon, bodypart)
 		end
 	end

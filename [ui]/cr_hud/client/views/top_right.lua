@@ -1,5 +1,4 @@
-﻿local localPlayer = localPlayer
-local show = false
+﻿local render = false
 local width, height = 400, 67
 local sx, sy = guiGetScreenSize()
 
@@ -47,14 +46,14 @@ function drawOverlayTopRight(info, widthNew, posXOffsetNew, posYOffsetNew, coold
     end
     
     if content then
-        show = true
+        render = true
     end
 	
 	toBeDrawnWidth = width
     
     if cooldownTime ~= 0 and not pinned then
         timerClose = setTimer(function()
-            show = false
+            render = false
             setElementData(localPlayer, "hud:overlayTopRight", 0, false)
         end, cooldownTime * 1000, 1)
     end
@@ -62,8 +61,8 @@ end
 addEvent("hudOverlay:drawOverlayTopRight", true)
 addEventHandler("hudOverlay:drawOverlayTopRight", localPlayer, drawOverlayTopRight)
 
-addEventHandler("onClientRender", root, function ()
-    if show and not getElementData(localPlayer, "integration:previewPMShowing") and getElementData(localPlayer, "loggedin") == 1 then 
+addEventHandler("onClientRender", root, function()
+    if render and not getElementData(localPlayer, "integration:previewPMShowing") and getElementData(localPlayer, "loggedin") == 1 then 
         if getPedWeapon(localPlayer) ~= 43 or not getPedControlState(localPlayer, "aim_weapon") then
             local hudDxHeight = getElementData(localPlayer, "hud:whereToDisplayY") or 0
             if hudDxHeight then
@@ -98,11 +97,11 @@ end
 function unpinIt()
     setElementData(localPlayer, "hud:pin", false, false)
     timerClose = setTimer(function()
-        show = false
+        render = false
         setElementData(localPlayer, "hud:overlayTopRight", 0, false)
     end, 3000, 1)
 end
 
-function isOverlayShow()
-    return show
+function isOverlayRender()
+    return render
 end

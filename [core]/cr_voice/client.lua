@@ -79,7 +79,7 @@ addEventHandler("onClientRender", root, function()
 				local playerName = getPlayerName(player):gsub("_", " ") .. " (" .. getElementData(player, "playerid") .. ")"
 				local nameExtension = "(" .. math.floor(distance) .. "m)"
 				
-				if getPlayerMaskState(player) then 
+				if exports.cr_global:getPlayerMaskState(player) then 
 					playerName = "Gizli [>" .. getElementData(player, "dbid") .. "]"
 				end
 				

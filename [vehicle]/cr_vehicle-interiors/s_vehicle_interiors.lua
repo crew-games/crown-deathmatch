@@ -367,115 +367,87 @@ function enterCockpitByKey(thePlayer, key, keyState)
 end
 
 function hitVehicleEntrance(hitElement, matchingDimension)
-	--outputDebugString("hitVehicleEntrance()")
 	if matchingDimension and getElementType(hitElement) == "player" then
-		--outputDebugString("matching")
 		local vehicle = getElementAttachedTo(source)
 		if vehicles[vehicle] then
-			--outputDebugString("found veh")
 			if not isVehicleLocked(vehicle) then
-				--outputDebugString("not locked")
-				--[[
-				local owner = getElementData(vehicle, "owner")
-				local faction = getElementData(vehicle, "faction")
-				local ownerName = "None."
-				if owner < 0 and faction == -1 then
-					--ownerName = "None."
-				elseif (faction==-1) and (owner>0) then
-					ownerName = exports['cr_cache']:getCharacterName(owner)
-				elseif (faction > 0) then
-					local factionName
-					for key, value in ipairs(exports.cr_pool:getPoolElementsByType("team")) do
-						local id = tonumber(getElementData(value, "id"))
-						if (id==faction) then
-							factionName = getTeamName(value)
-							break
-						end
-					end
-					if factionName then
-						ownerName = factionName
-					end
-				end
-				--]]
 				triggerClientEvent(hitElement, "vehicle-interiors:showInteriorGUI", vehicle)
 			end
 		end
 	end
 end
+
 function leaveVehicleEntrance(hitElement, matchingDimension)
-	--outputDebugString("leaveVehicleEntrance()")
 	if matchingDimension and getElementType(hitElement) == "player" then
 		triggerClientEvent(hitElement, "vehicle-interiors:hideInteriorGUI", hitElement)
 	end
 end
 
--- enter over right click menu
 function teleportTo(player, x, y, z, dimension, interior, freeze)
 	fadeCamera(player, false, 1)
 	
-	setTimer(
-		function(player)
-			setElementDimension(player, dimension)
-			setElementInterior(player, interior)
-			setCameraInterior(player, interior)
-			setElementPosition(player, x, y, z)
-			
-			triggerEvent("onPlayerInteriorChange", player)
-			
-			setTimer(fadeCamera, 1000, 1, player, true, 2)
-			
-			if freeze then 
-				triggerClientEvent(player, "usedElevator", player) -- DISABLED because the event was buggged for an unknown reason on client side / Farid
-				setElementFrozen(player, true)
-				setPedGravity(player, 0)
-			end
-		end, 1000, 1, player
-	)
+	setTimer(function(player)
+		setElementDimension(player, dimension)
+		setElementInterior(player, interior)
+		setCameraInterior(player, interior)
+		setElementPosition(player, x, y, z)
+		
+		triggerEvent("onPlayerInteriorChange", player)
+		
+		setTimer(fadeCamera, 1000, 1, player, true, 2)
+		
+		if freeze then 
+			triggerClientEvent(player, "usedElevator", player)
+			setElementFrozen(player, true)
+			setPedGravity(player, 0)
+		end
+	end, 1000, 1, player)
 end
 
 addEvent("enterVehicleInterior", true)
-addEventHandler("enterVehicleInterior", root,
-	function(vehicle)
-		--outputDebugString("enterVehicleInterior")
-		if vehicles[vehicle] then
-			if isVehicleLocked(vehicle) then
-				outputChatBox("You try the door handle, but it seems to be locked.", source, 255, 0, 0)
-			else
-				local model = getElementModel(vehicle)
-				if (model == 577 or model == 592) then --texture change
-					triggerClientEvent(source, "vehicle-interiors:changeTextures", vehicle, model)
-				end
-				
-				if (model == 592) then --Andromada (for vehicles)
-					if (isPedInVehicle(source)) then
-						if (getPedOccupiedVehicleSeat(source) == 0) then
-							local pedVehicle = getPedOccupiedVehicle(source)
-							setElementData(pedVehicle, "health", getElementHealth(pedVehicle), false)
-							for i = 0, getVehicleMaxPassengers(pedVehicle) do
-								local p = getVehicleOccupant(pedVehicle, i)
-								if p then
-									triggerClientEvent(p, "CantFallOffBike", p)
-								end
-							end
-							local exit = vehicles[vehicle]
-							local x, y, z = getElementPosition(exit)
-							setTimer(warpVehicleIntoInteriorfunction, 500, 1, pedVehicle, getElementInterior(exit), getElementDimension(exit), x, y, z)	
-						end
-						return
-					end
-				end
+addEventHandler("enterVehicleInterior", root, function(vehicle)
+	if client ~= client then
+		return
+	end
 
-				local exit = vehicles[vehicle]
-				local x, y, z = getElementPosition(exit)
-				local targetInt, targetDim = getElementInterior(exit), getElementDimension(exit)
-				local teleportArr = { x, y, z, targetInt, targetDim, 0, 0 }
-				setElementInterior(source, targetInt)
-				setElementDimension(source, targetDim)
-				triggerClientEvent(source, "setPlayerInsideInterior2", vehicle, teleportArr, false)
+	if vehicles[vehicle] then
+		if isVehicleLocked(vehicle) then
+			outputChatBox("You try the door handle, but it seems to be locked.", client, 255, 0, 0)
+		else
+			local model = getElementModel(vehicle)
+			if (model == 577 or model == 592) then
+				triggerClientEvent(client, "vehicle-interiors:changeTextures", vehicle, model)
 			end
+			
+			if (model == 592) then
+				if (isPedInVehicle(client)) then
+					if (getPedOccupiedVehicleSeat(client) == 0) then
+						local pedVehicle = getPedOccupiedVehicle(client)
+						setElementData(pedVehicle, "health", getElementHealth(pedVehicle), false)
+						for i = 0, getVehicleMaxPassengers(pedVehicle) do
+							local p = getVehicleOccupant(pedVehicle, i)
+							if p then
+								triggerClientEvent(p, "CantFallOffBike", p)
+							end
+						end
+						local exit = vehicles[vehicle]
+						local x, y, z = getElementPosition(exit)
+						setTimer(warpVehicleIntoInteriorfunction, 500, 1, pedVehicle, getElementInterior(exit), getElementDimension(exit), x, y, z)	
+					end
+					return
+				end
+			end
+
+			local exit = vehicles[vehicle]
+			local x, y, z = getElementPosition(exit)
+			local targetInt, targetDim = getElementInterior(exit), getElementDimension(exit)
+			local teleportArr = { x, y, z, targetInt, targetDim, 0, 0 }
+			setElementInterior(client, targetInt)
+			setElementDimension(client, targetDim)
+			triggerClientEvent(client, "setPlayerInsideInterior2", vehicle, teleportArr, false)
 		end
 	end
-)
+end)
 
 function warpVehicleIntoInteriorfunction(vehicle, interior, dimension, x, y, z, rz)
 	if isElement(vehicle) then
@@ -487,14 +459,13 @@ function warpVehicleIntoInteriorfunction(vehicle, interior, dimension, x, y, z, 
 		setElementVelocity(vehicle, 0, 0, 0)
 		setElementAngularVelocity(vehicle, 0, 0, 0)
 		setVehicleRotation(vehicle, 0, 0, 0)
-		--setElementRotation(vehicle, rz or 0, 0, 0, "ZYX")
 		setTimer(setElementAngularVelocity, 50, 2, vehicle, 0, 0, 0)			
 		setElementHealth(vehicle, getElementData(vehicle, "health") or 1000)
 		setElementData(vehicle, "health")
 		setElementFrozen(vehicle, true)
-					
+		
 		setTimer(setElementFrozen, 1000, 1, vehicle, false)
-			
+		
 		for i = 0, getVehicleMaxPassengers(vehicle) do
 			local player = getVehicleOccupant(vehicle, i)
 			if player then

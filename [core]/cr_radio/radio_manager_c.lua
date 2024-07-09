@@ -403,7 +403,7 @@ function openNewStation(id, name, ip, state, order, buyNew)
 		end
 	end
 
-	local changeSubmitBtn = function ()
+	local changeSubmitBtn = function()
 		if id and (source == gui.eName or source == gui.eIP) then
 			guiSetText(gui.bSubmit, "Save")
 		end

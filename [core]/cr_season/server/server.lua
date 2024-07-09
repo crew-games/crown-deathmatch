@@ -22,6 +22,9 @@ function resetSeason(thePlayer, commandName)
 			if (getElementData(player, "loggedin") == 1) then
 				setElementData(player, "kills", 0)
 				setElementData(player, "deaths", 0)
+				setElementData(player, "pass_type", 1)
+				setElementData(player, "pass_level", 1)
+				setElementData(player, "pass_xp", 0)
 				exports.cr_rank:checkPlayerRank(player, false)
 			end
 		end
@@ -30,7 +33,7 @@ function resetSeason(thePlayer, commandName)
 			setElementData(team, "turf_kills", 0)
 		end
 		
-		dbExec(mysql:getConnection(), "UPDATE characters SET x = ?, y = ?, z = ?, interior_id = ?, dimension_id = ?, kills = ?, deaths = ?", 2034.1220703125 + math.random(3, 6), -1415.0302734375 + math.random(3, 6), 16.9921875, 0, 0, 0, 0)
+		dbExec(mysql:getConnection(), "UPDATE characters SET x = ?, y = ?, z = ?, interior_id = 0, dimension_id = 0, kills = 0, deaths = 0, pass_type = 1, pass_level = 1, pass_xp = 0", 2034.1220703125 + math.random(3, 6), -1415.0302734375 + math.random(3, 6), 16.9921875)
 		dbExec(mysql:getConnection(), "UPDATE factions SET turf_kills = 0")
 	end
 end
@@ -57,12 +60,15 @@ end
 
 addEvent("season.finishScene", true)
 addEventHandler("season.finishScene", root, function()
-	if client ~= client then return end
+	if client ~= source then return end
+	
+	fadeCamera(client, true)
 	setElementPosition(client, 2034.1220703125 + math.random(3, 6), -1415.0302734375 + math.random(3, 6), 16.9921875)
 	setElementInterior(client, 0)
 	setElementDimension(client, 0)
-	outputChatBox(">>#FFFFFF Sezon 6'ya hoşgeldiniz!", client, 0, 255, 0, true)
-	outputChatBox(">>#FFFFFF Bol şanslar dileriz ve iyi eğlenceler!", client, 0, 255, 0, true)
+	
+	outputChatBox("[!]#FFFFFF Sezon 7'ye hoşgeldiniz!", client, 0, 255, 0, true)
+	outputChatBox("[!]#FFFFFF Bol şanslar dileriz ve iyi eğlenceler!", client, 0, 255, 0, true)
 	triggerClientEvent(client, "playSuccessfulSound", client)
 end)
 

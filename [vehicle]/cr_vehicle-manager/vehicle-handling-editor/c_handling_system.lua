@@ -409,13 +409,13 @@ function showDriveTestTimer(veh, driveTestTimeSec, thePed)
 	addEventHandler("onClientGUIClick", GUIEditor_Button["finish"], function()
 		if source == GUIEditor_Button["finish"] then
 			exports.cr_global:fadeToBlack()
-			setTimer(function ()
+			setTimer(function()
 				closeCountdownDriveTest()
 				triggerServerEvent("vehicle-manager:handling:finishTestDrive", localPlayer, veh, thePed)
 			end, 1000, 1)
 			playSuccess()
 			
-			setTimer(function ()
+			setTimer(function()
 				exports.cr_global:fadeFromBlack(source)
 			end, 3000, 1)
 		end
@@ -426,13 +426,13 @@ function showDriveTestTimer(veh, driveTestTimeSec, thePed)
 		addEventHandler("onClientGUIClick", GUIEditor_Button["orderfinish"], function()
 			if source == GUIEditor_Button["orderfinish"] then
 				exports.cr_global:fadeToBlack()
-				setTimer(function ()
+				setTimer(function()
 					closeCountdownDriveTest()
 					triggerServerEvent("vehicle-manager:handling:finishTestDrive", localPlayer, veh, thePed, true)
 				end, 1000, 1)
 				playSuccess()
 				
-				setTimer(function ()
+				setTimer(function()
 					exports.cr_global:fadeFromBlack(source)
 				end, 3000, 1)
 			end

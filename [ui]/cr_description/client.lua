@@ -12,8 +12,6 @@ local basePlateSize = {
     y = 512
 }
 
-local ui
-
 function createRender(funcName, func, tick)
     if not tick then
         tick = 5
@@ -41,7 +39,6 @@ addEventHandler("onClientResourceStart", resourceRoot, function()
         if localPlayer:getData("loggedin") ~= 1 then
             return
         end
-        ui = exports.cr_widget
 
         refreshNearByVehs()
         createRender("showText", showText)
@@ -61,7 +58,6 @@ addEventHandler("onClientResourceStart", resourceRoot, function()
         if checkRender("showText") then
             destroyRender("showText")
         else
-            ui = exports.cr_widget
             refreshNearByVehs()
             createRender("showText", showText)
         end

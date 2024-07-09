@@ -107,25 +107,25 @@ function buildDispatchGUI()
 
 	GUIEditor.button[4] = guiCreateButton(0.01, 0.89, 0.98, 0.1, "Close", true, GUIEditor.window[1])
 
-	addEventHandler("onClientGUIClick", GUIEditor.button[4], function () -- Close button
+	addEventHandler("onClientGUIClick", GUIEditor.button[4], function() -- Close button
 		if isElement(GUIEditor.window[1]) then destroyElement(GUIEditor.window[1]) end
 	end, false)
 
-	addEventHandler("onClientGUIComboBoxAccepted", GUIEditor.combobox[1], function () -- Change status button
+	addEventHandler("onClientGUIComboBoxAccepted", GUIEditor.combobox[1], function() -- Change status button
 		local newstatus = guiGetText(GUIEditor.combobox[1])
 		if newstatus == nil or string.len(newstatus) < 2 then newstatus = "Off duty" end
 		setElementData(localPlayer, "dispatch:status", newstatus)
 		reloadWindow()
 	end, false)
 
-	addEventHandler("onClientGUIComboBoxAccepted", GUIEditor.combobox[2], function () -- Change callsign
+	addEventHandler("onClientGUIComboBoxAccepted", GUIEditor.combobox[2], function() -- Change callsign
 		local newcallsign = guiGetText(GUIEditor.combobox[2])
 		if newcallsign == nil or string.len(newcallsign) < 2 then newcallsign = "Not set" end
 		setElementData(localPlayer, "dispatch:callsign", newcallsign)
 		reloadWindow()
 	end, false)
 
-	addEventHandler("onClientGUIComboBoxAccepted", GUIEditor.combobox[3], function () -- Change availability
+	addEventHandler("onClientGUIComboBoxAccepted", GUIEditor.combobox[3], function() -- Change availability
 		local newavailability = guiGetText(GUIEditor.combobox[3])
 		if newavailability == nil or string.len(newavailability) < 2 then newavailability = "Not set" end
 		setElementData(localPlayer, "dispatch:availability", newavailability)

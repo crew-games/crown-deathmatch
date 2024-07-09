@@ -17,7 +17,7 @@ end
 addEvent("report-system:drawOverlayTopRight", true)
 addEventHandler("report-system:drawOverlayTopRight", localPlayer, drawOverlayTopRight)
 
-addEventHandler("onClientRender",root, function ()
+addEventHandler("onClientRender",root, function()
 	if showTopRightReportBox(localPlayer) and not getElementData(localPlayer, "integration:previewPMShowing") then 
 		if (getElementData(localPlayer, "loggedin") == 1) and (getPedWeapon(localPlayer) ~= 43 or not getPedControlState("aim_weapon")) and not isPlayerMapVisible() then
 			local woffset, hoffset = -10, 10

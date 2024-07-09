@@ -1,9 +1,34 @@
-local mysql = exports.cr_mysql
+local passwordTimer = {}
+
+addEvent("account.requestPlayerInfo", true)
+addEventHandler("account.requestPlayerInfo", root, function()
+    if client ~= source then
+		return
+	end
+	
+	resetPlayer(client)
+	dbQuery(function(qh, client)
+        local results, rows = dbPoll(qh, -1)
+        if rows > 0 and results[1] then
+            local data = results[1]
+            local admin = data.admin or "Bilinmiyor"
+            local reason = data.reason or "Bilinmiyor"
+            local date = data.date or "Bilinmiyor"
+            local endTick = tonumber(data.end_tick) or 0
+            triggerClientEvent(client, "account.banScreen", client, {admin, reason, date, endTick})
+		else
+			triggerClientEvent(client, "account.accountScreen", client)
+        end
+    end, {client}, exports.cr_mysql:getConnection(), "SELECT * FROM bans WHERE serial = ? OR ip = ?", getPlayerSerial(client), getPlayerIP(client))
+end)
 
 addEvent("account.requestLogin", true)
 addEventHandler("account.requestLogin", root, function(username, password, checkSave)
-	if client ~= source then return end
-	dbQuery(loginCallback, {client, username, password, checkSave}, mysql:getConnection(), "SELECT * FROM accounts WHERE username = ?", mysql:escape_string(tostring(username)))
+	if client ~= source then
+		return
+	end
+	
+	dbQuery(loginCallback, {client, username, password, checkSave}, exports.cr_mysql:getConnection(), "SELECT * FROM accounts WHERE username = ?", exports.cr_mysql:escape_string(tostring(username)))
 end)
 
 function loginCallback(queryHandler, client, username, password, checkSave)
@@ -15,7 +40,7 @@ function loginCallback(queryHandler, client, username, password, checkSave)
 			if tonumber(data["banned"]) == 0 then
 				if (((tonumber(data["admin"]) > 0) or (tonumber(data["supporter"]) > 0) or (tonumber(data["vct"]) > 0) or (tonumber(data["mapper"]) > 0) or (tonumber(data["scripter"]) > 0)) and (data["mtaserial"] ~= getPlayerSerial(client))) then
 					exports.cr_infobox:addBox(client, "error", "Farklı serial'den yetkili hesabına giriş yapamazsınız, lütfen yönetim ekibiyle iletişime geçin.")
-					triggerClientEvent(client, "account.removeLoading", client)
+					triggerClientEvent(client, "account.removeQueryLoading", client)
 					return
 				end
 				
@@ -35,8 +60,8 @@ function loginCallback(queryHandler, client, username, password, checkSave)
 				setElementData(client, "scripter_level", tonumber(data["scripter"]))
 				setElementData(client, "manager", tonumber(data["manager"]))
 	
-				triggerClientEvent(client, "hud:loadSettings", client)
-				triggerClientEvent(client, "nametag:loadSettings", client)
+				triggerClientEvent(client, "hud.loadSettings", client)
+				triggerClientEvent(client, "nametag.loadSettings", client)
 				
 				setElementData(client, "charlimit", tonumber(data["charlimit"]))
 				setElementData(client, "balance", tonumber(data["balance"]))
@@ -79,37 +104,38 @@ function loginCallback(queryHandler, client, username, password, checkSave)
 				
 				triggerClientEvent(client, "vehicle_rims", client)
 	
-				local characters = {}
+				local characters = getElementData(client, "account:characters") or {}
 				dbQuery(function(qh, client)
-					local res, rows, err = dbPoll(qh, 0)
-					if rows > 0 then
-						for index, value in ipairs(res) do
-							if value.cked == 0 then
-								local i = #characters + 1
-								if not characters[i] then
-									characters[i] = {}
-								end
-	
-								characters[i][1] = value.id
-								characters[i][2] = value.charactername
-								characters[i][3] = value.age
-								characters[i][4] = value.gender
-								characters[i][5] = value.skin
-								characters[i][6] = value.height
-								characters[i][7] = value.weight
-								characters[i][8] = value.x, value.y, value.z
-								characters[i][9] = value.cked
-								characters[i][10] = ""
+					local results, rows = dbPoll(qh, -1)
+					if results[1] and rows > 0 then
+						for _, data in ipairs(results) do
+							local index = #characters + 1
+							if not characters[index] then
+								characters[index] = {}
 							end
+							
+							characters[index] = {
+								id = data.id,
+								characterName = data.charactername,
+								skin = data.skin,
+								kills = data.kills,
+								deaths = data.deaths,
+								level = data.level
+							}
 						end
 					end
-	
+					
 					setElementData(client, "account:characters", characters)
-					triggerClientEvent(client, "account.loadCharacterSelector", client, characters)
-				end, {client}, mysql:getConnection(), "SELECT * FROM characters WHERE account = ?", tonumber(data["id"]))
+					
+					if #characters > 0 then
+						triggerClientEvent(client, "account.characterSelection", client, characters)
+					else
+						triggerClientEvent(client, "account.characterCreation", client)
+					end
+				end, {client}, exports.cr_mysql:getConnection(), "SELECT * FROM characters WHERE account = ? AND cked = 0", tonumber(data["id"]))
 	
-				dbExec(mysql:getConnection(), "UPDATE `accounts` SET `ip`='" .. getPlayerIP(client) .. "', `mtaserial`='" .. getPlayerSerial(client) .. "' WHERE `id`='" ..  tostring(data["id"])  .. "'")
-				triggerClientEvent(client, "account.removeLogin", client)
+				dbExec(exports.cr_mysql:getConnection(), "UPDATE `accounts` SET `ip`='" .. getPlayerIP(client) .. "', `mtaserial`='" .. getPlayerSerial(client) .. "' WHERE `id`='" ..  tostring(data["id"])  .. "'")
+				triggerClientEvent(client, "account.removeAccount", client)
 			else
 				exports.cr_infobox:addBox(client, "error", "Bu hesap yasaklanmıştır.")
 			end
@@ -120,18 +146,20 @@ function loginCallback(queryHandler, client, username, password, checkSave)
 		exports.cr_infobox:addBox(client, "error", username .. " isimli kullanıcı veritabanında bulunamadı.")
 	end
 	
-	triggerClientEvent(client, "account.removeLoading", client)
+	triggerClientEvent(client, "account.removeQueryLoading", client)
 end
 
 addEvent("account.requestRegister", true)
 addEventHandler("account.requestRegister", root, function(username, password)
-	if client ~= source then return end
+	if client ~= source then
+		return
+	end
 	
 	local mtaSerial = getPlayerSerial(client)
 	local password = string.upper(md5(password))
 	local ipAddress = getPlayerIP(client)
 	
-	dbQuery(registerCallback, {client, username, password, mtaSerial, ipAddress, password}, mysql:getConnection(), "SELECT username, mtaserial FROM accounts WHERE (username = ? or mtaserial = ?)", mysql:escape_string(tostring(username)), mysql:escape_string(tostring(mtaSerial)))
+	dbQuery(registerCallback, {client, username, password, mtaSerial, ipAddress, password}, exports.cr_mysql:getConnection(), "SELECT username, mtaserial FROM accounts WHERE (username = ? or mtaserial = ?)", exports.cr_mysql:escape_string(tostring(username)), exports.cr_mysql:escape_string(tostring(mtaSerial)))
 end)
 
 function registerCallback(queryHandler, client, username, password, serial, ip, password)
@@ -139,13 +167,71 @@ function registerCallback(queryHandler, client, username, password, serial, ip, 
 	if rows > 0 then
 		exports.cr_infobox:addBox(client, "error", result[1]["username"] .. " isimli bir hesaba zaten sahipsiniz.")
 	else
-		dbExec(mysql:getConnection(), "INSERT INTO `accounts` SET `username`='" .. mysql:escape_string(tostring(username)) .. "', `password`='" .. mysql:escape_string(tostring(password)) .. "', `registerdate`=NOW(), `ip`='" .. ip .. "', `mtaserial`='" .. serial .. "', `activated`='1'")
+		dbExec(exports.cr_mysql:getConnection(), "INSERT INTO `accounts` SET `username`='" .. exports.cr_mysql:escape_string(tostring(username)) .. "', `password`='" .. exports.cr_mysql:escape_string(tostring(password)) .. "', `registerdate`=NOW(), `ip`='" .. ip .. "', `mtaserial`='" .. serial .. "', `activated`='1'")
 		exports.cr_infobox:addBox(client, "success", "Başarıyla " .. username .. " isimli hesabınız oluşturuldu.")
 	end
-	triggerClientEvent(client, "account.removeLoading", client)
+	triggerClientEvent(client, "account.removeQueryLoading", client)
 end
 
-function spawnCharacter(characterID, remoteAccountID, theAdmin, targetAccountName, location)
+addEvent("account.createCharacter", true)
+addEventHandler("account.createCharacter", root, function(packedData)
+	if client ~= source then
+		return
+	end
+	
+	local characters = client:getData("account:characters") or {}
+    local maxCharacterCount = tonumber(client:getData("charlimit") or 1) or 3
+    local characterCount = (characters and #characters or 1) - 1
+
+    if characterCount >= maxCharacterCount then
+        exports.cr_infobox:addBox(client, "error", "Maksimum karakter sayısına ulaştınız, marketten karakter slotu satın alınız.")
+        return
+    end
+
+	packedData.characterName = string.gsub(packedData.characterName, " ", "_")
+	dbQuery(function(qh, client, packedData)
+        local results, rows = dbPoll(qh, -1)
+        if results[1] and rows > 0 then
+            exports.cr_infobox:addBox(client, "error", "Böyle bir karakter var.")
+		else
+			local accountID = getElementData(client, "account:id")
+			
+			local walkingStyle = 118
+			if packedData.gender == 1 then
+				walkingStyle = 129
+			end
+			
+			dbExec(exports.cr_mysql:getConnection(), "INSERT INTO characters SET account = ?, charactername = ?, x = ?, y = ?, z = ?, rotation = ?, interior_id = ?, dimension_id = ?, skin = ?, age = ?, gender = ?, height = ?, weight = ?, skincolor = ?, country = ?, walkingstyle = ?, creationdate = NOW()", accountID, packedData.characterName, 2034.1220703125 + math.random(3, 6), -1415.0302734375 + math.random(3, 6), 16.9921875, 90, 0, 0, packedData.skin, packedData.age, packedData.gender, packedData.height, packedData.weight, packedData.race, packedData.country, walkingStyle)
+			
+			dbQuery(function(qh, client, packedData)
+				local results, rows = dbPoll(qh, -1)
+				if results[1] and rows > 0 then
+					local data = results[1]
+					
+					local index = #characters + 1
+					if not characters[index] then
+						characters[index] = {}
+					end
+					
+					characters[index] = {
+						id = data.id,
+						characterName = data.charactername,
+						skin = data.skin,
+						kills = data.kills,
+						deaths = data.deaths,
+						level = data.level
+					}
+					
+					setElementData(client, "account:characters", characters)
+					triggerClientEvent(client, "account.joinCharacter", client, data.id)
+				end
+			end, {client, packedData}, exports.cr_mysql:getConnection(), "SELECT id FROM characters WHERE id = LAST_INSERT_ID()")
+		end
+    end, {client, packedData}, exports.cr_mysql:getConnection(), "SELECT charactername FROM characters WHERE charactername = ?", packedData.characterName)
+	triggerClientEvent(client, "account.removeQueryLoading", client)
+end)
+
+function joinCharacter(characterID, remoteAccountID, theAdmin, targetAccountName, location)
 	if theAdmin then
 		client = theAdmin
 	end
@@ -189,9 +275,9 @@ function spawnCharacter(characterID, remoteAccountID, theAdmin, targetAccountNam
 	
 	if theAdmin then
 		accountID = remoteAccountID
-		sqlQuery = "SELECT * FROM `characters` WHERE `id`='" .. mysql:escape_string(tostring(characterID)) .. "' AND `account`='" .. mysql:escape_string(tostring(accountID)) .. "'"
+		sqlQuery = "SELECT * FROM `characters` WHERE `id`='" .. exports.cr_mysql:escape_string(tostring(characterID)) .. "' AND `account`='" .. exports.cr_mysql:escape_string(tostring(accountID)) .. "'"
 	else
-		sqlQuery = "SELECT * FROM `characters` WHERE `id`='" .. mysql:escape_string(tostring(characterID)) .. "' AND `account`='" .. mysql:escape_string(tostring(accountID)) .. "' AND `cked`=0"
+		sqlQuery = "SELECT * FROM `characters` WHERE `id`='" .. exports.cr_mysql:escape_string(tostring(characterID)) .. "' AND `account`='" .. exports.cr_mysql:escape_string(tostring(accountID)) .. "' AND `cked`=0"
 	end
 	
 	dbQuery(function(qh, client, characterID, remoteAccountID, theAdmin, targetAccountName, location)
@@ -220,7 +306,6 @@ function spawnCharacter(characterID, remoteAccountID, theAdmin, targetAccountNam
 					triggerClientEvent(client, "account.countryPanel", client)		
 				end
 				
-				-- LANGUAGES
 				local lang1 = tonumber(data["lang1"])
 				local lang1skill = tonumber(data["lang1skill"])
 				local lang2 = tonumber(data["lang2"])
@@ -250,7 +335,6 @@ function spawnCharacter(characterID, remoteAccountID, theAdmin, targetAccountNam
 				
 				setElementData(client, "languages.lang3", lang3)
 				setElementData(client, "languages.lang3skill", lang3skill)
-				-- END OF LANGUAGES
 				
 				setElementData(client, "timeinserver", tonumber(data["timeinserver"]))
 				
@@ -318,7 +402,7 @@ function spawnCharacter(characterID, remoteAccountID, theAdmin, targetAccountNam
 					teamElement = exports.cr_pool:getElement("team", tonumber(data["faction_id"]))
 					if not (teamElement) then
 						data["faction_id"] = -1
-						dbExec(mysql:getConnection(), "UPDATE characters SET faction_id='-1', faction_rank='1' WHERE id='" .. tostring(characterID) .. "' LIMIT 1")
+						dbExec(exports.cr_mysql:getConnection(), "UPDATE characters SET faction_id='-1', faction_rank='1' WHERE id='" .. tostring(characterID) .. "' LIMIT 1")
 					end
 				end
 				
@@ -332,7 +416,6 @@ function spawnCharacter(characterID, remoteAccountID, theAdmin, targetAccountNam
 				local gmLevel = getElementData(client, "account:gmlevel")
 				exports.cr_global:updateNametagColor(client)
 				
-				-- ADMIN JAIL
 				local jailed = getElementData(client, "adminjailed")
 				local jailws_time = getElementData(client, "jailtime")
 				local jailws_by = getElementData(client, "jailadmin")
@@ -408,15 +491,15 @@ function spawnCharacter(characterID, remoteAccountID, theAdmin, targetAccountNam
 				setElementData(client, "pass_level", tonumber(data["pass_level"]))
 				setElementData(client, "pass_xp", tonumber(data["pass_xp"]))
 				
-				setElementData(client, "vip", 0)
-				local resource = getResourceFromName("cr_vip")
+				setElementData(client, "vip", 5)
+				--[[local resource = getResourceFromName("cr_vip")
 				if resource then
 					local state = getResourceState(resource)
 					if state == "running" then
 						setElementData(client, "vip", 0)
 						exports.cr_vip:loadVIP(characterID)
 					end
-				end
+				end]]
 
 				if (tonumber(data["blindfold"]) == 1) then
 					fadeCamera(client, false)
@@ -438,7 +521,7 @@ function spawnCharacter(characterID, remoteAccountID, theAdmin, targetAccountNam
 				if tonumber(data["job"]) == 1 then
 					if data["jobTruckingRuns"] then
 						setElementData(client, "job-system:truckruns", tonumber(data["jobTruckingRuns"]))
-						dbExec(mysql:getConnection(), "UPDATE `jobs` SET `jobTruckingRuns`='0' WHERE `jobCharID`='" .. tostring(characterID) .. "' AND `jobID`='1' ")
+						dbExec(exports.cr_mysql:getConnection(), "UPDATE `jobs` SET `jobTruckingRuns`='0' WHERE `jobCharID`='" .. tostring(characterID) .. "' AND `jobID`='1' ")
 					end
 					triggerClientEvent(client,"restoreTruckerJob",client)
 				end
@@ -488,7 +571,7 @@ function spawnCharacter(characterID, remoteAccountID, theAdmin, targetAccountNam
 							end
 						end
 					end
-				end, mysql:getConnection(), "SELECT id FROM `vehicles` WHERE deleted=0 AND owner='" .. (data["id"]) .. "'")
+				end, exports.cr_mysql:getConnection(), "SELECT id FROM `vehicles` WHERE deleted=0 AND owner='" .. (data["id"]) .. "'")
 				
 				setPedStat(client, 70, 999)
 				setPedStat(client, 71, 999)
@@ -517,7 +600,7 @@ function spawnCharacter(characterID, remoteAccountID, theAdmin, targetAccountNam
 				
 				setPedFightingStyle(client, tonumber(data["fightstyle"]))     
 				triggerEvent("onCharacterLogin", client, charname, tonumber(data["faction_id"]))
-				triggerClientEvent(client, "account.spawnCharacterComplete", client, fixedName, adminLevel, gmLevel, tonumber(data["faction_id"]), tonumber(data["faction_rank"]))
+				triggerClientEvent(client, "account.joinCharacterComplete", client, fixedName, adminLevel, gmLevel, tonumber(data["faction_id"]), tonumber(data["faction_rank"]))
 				triggerClientEvent(client, "item:updateclient", client)
 				
 				setElementAlpha(client, 255)
@@ -528,13 +611,46 @@ function spawnCharacter(characterID, remoteAccountID, theAdmin, targetAccountNam
 				triggerEvent("playerGetMotds", client)
 			end
 		end
-	end, {client, characterID, remoteAccountID, theAdmin, targetAccountName, location}, mysql:getConnection(), sqlQuery)
+	end, {client, characterID, remoteAccountID, theAdmin, targetAccountName, location}, exports.cr_mysql:getConnection(), sqlQuery)
+	triggerClientEvent(client, "account.removeQueryLoading", client)
 end
-addEvent("account.spawnCharacter", true)
-addEventHandler("account.spawnCharacter", root, spawnCharacter)
+addEvent("account.joinCharacter", true)
+addEventHandler("account.joinCharacter", root, joinCharacter)
+
+addEvent("account.resetPlayerName", true)
+addEventHandler("account.resetPlayerName", root, function(oldNick, newNick)
+	if client ~= source then
+		return
+	end
+	
+	setElementData(client, "legitnamechange", 1)
+	setPlayerName(client, oldNick)
+	setElementData(client, "legitnamechange", 0)
+	exports.cr_global:sendMessageToAdmins("[ADM] " .. tostring(oldNick) .. " isimli oyuncu kendi adını değiştirmek için çalıştı, " .. tostring(newNick) .. ".")
+end)
+
+addEventHandler("onPlayerJoin", root, function()
+	resetPlayer(source)
+end)
+
+function resetPlayer(thePlayer)
+	for data, _ in pairs(getAllElementData(thePlayer)) do
+		if data ~= "playerid" then
+			removeElementData(thePlayer, data)
+		end
+    end
+
+    setElementData(thePlayer, "loggedin", 0)
+    setElementData(thePlayer, "account:loggedin", false)
+	setElementData(thePlayer, "voice_channel", exports.cr_voice:getDefaultVoiceChannel())
+	
+	setElementDimension(thePlayer, 9999)
+	setElementInterior(thePlayer, 0)
+	exports.cr_global:updateNametagColor(thePlayer)
+end
 
 function removeMasksAndBadges(client)
-    for k, v in ipairs({ exports.cr_items:getMasks(), exports.cr_items:getBadges() }) do
+    for k, v in ipairs({exports.cr_items:getMasks(), exports.cr_items:getBadges()}) do
         for kx, vx in pairs(v) do
             if getElementData(client, vx[1]) then
                setElementData(client, vx[1], false)
@@ -543,100 +659,13 @@ function removeMasksAndBadges(client)
     end
 end
 
-addEvent("account.resetPlayer", true)
-addEventHandler("account.resetPlayer", root, function()
-    if client ~= source then return end
-	
-	exports.cr_global:updateNametagColor(source)
-	
-	for index, value in pairs(getAllElementData(source)) do
-		if index ~= "playerid" then
-			removeElementData(source, index)
-		end
-    end
-
-    setElementData(source, "loggedin", 0)
-	setElementData(source, "account:loggedin", false)
-	setElementData(source, "account:username", "")
-	setElementData(source, "account:id", 0)
-	setElementData(source, "dbid", false)
-	setElementData(source, "admin_level", 0)
-	setElementData(source, "hiddenadmin", 0)
-	setElementData(source, "globalooc", 1)
-	setElementData(source, "muted", 0)
-	setElementData(source, "loginattempts", 0)
-	setElementData(source, "timeinserver", 0)
-	setElementData(source, "chatbubbles", 0)
-	setElementData(source, "headTurning", true)
-	setElementData(source, "voiceChannel", exports.cr_voice:getDefaultVoiceChannel())
-	setElementDimension(source, 9999)
-	setElementInterior(source, 0)
-end)
-
-addEvent("account.checkCharacterName", true)
-addEventHandler("account.checkCharacterName", root, function(player, name)
-	if client ~= source then return end
-	dbQuery(function(qh)
-		local res, rows, err = dbPoll(qh, 0)
-		if (rows > 0) and (res[1] ~= nil) then
-			triggerClientEvent(player, "account.receiveCharacterName", player, false, name)
-		else
-			triggerClientEvent(player, "account.receiveCharacterName", player, true, name)
-		end
-	end, mysql:getConnection(), "SELECT charactername FROM characters WHERE charactername='" .. name:gsub(" ", "_") .. "'")
-end)
-
-function newCharacter(_characterName, _characterDescription, _race, _gender, _skin, _height, _weight, _age, _languageselectws, _month, _day, _location)
-	characterName, characterDescription, race, gender, skin, height, weight, age, languageselected, month, day, location = _characterName, _characterDescription, _race, _gender, _skin, _height, _weight, _age, _languageselectws, _month, _day, _location	
-	characterName = string.gsub(tostring(characterName), " ", "_")
-	dbQuery(function(qh, client, characterName, race, gender, skin, height, weight, age, languageselected, month, day)
-		local res, rows, err = dbPoll(qh, 0)
-		if rows > 0 then
-			exports.cr_infobox:addBox(client, "error", "Böyle bir karakter bulunuyor.")
-		else
-			local accountID = getElementData(client, "account:id")
-			local accountUsername = getElementData(client, "account:username")
-			local fingerprint = md5((characterName) .. accountID .. race .. gender .. age)
-			
-			if month == "Ocak" then
-				month = 1
-			end
-			
-			local walkingstyle = 118
-			if gender == 1 then
-				walkingstyle = 129
-			end
-			
-			location = { 2034.1220703125 + math.random(3, 6), -1415.0302734375 + math.random(3, 6), 16.9921875, 90, 0, 0, "Crown Deathmatch" }
-			
-			dbExec(mysql:getConnection(), "INSERT INTO `characters` SET `charactername`='" .. mysql:escape_string(tostring(characterName)).. "', `x`='" .. location[1] .. "', `y`='" .. location[2] .. "', `z`='" .. location[3] .. "', `rotation`='" .. location[4] .. "', `interior_id`='" .. location[5] .. "', `dimension_id`='" .. location[6] .. "', `lastarea`='" .. (location[7]) .. "', `gender`='" .. (gender) .. "', `skincolor`='" .. (race) .. "', `weight`='" .. (weight) .. "', `height`='" .. (height) .. "', `description`='', `account`='" .. (accountID) .. "', `skin`='" .. (skin) .. "', `age`='" .. (age) .. "', `fingerprint`='" .. (fingerprint) .. "', `lang1`='" .. (languageselected) .. "', `lang1skill`='100', `currLang`='1' , `month`='" .. (month or "1") .. "', `day`='" .. (day or "1") .. "', `walkingstyle`='" .. (walkingstyle) .. "'")
-	
-			dbQuery(function(qh, client, characterName, race, gender, skin, height, weight, age, languageselected, month, day)
-				local res, rows, err = dbPoll(qh, 0)
-				if rows > 0 then
-					local id = res[1]["id"]
-					setElementData(client, "dbid", id, false)
-					exports.cr_global:giveItem(client, 16, skin)
-					exports.cr_global:giveItem(client, 152, characterName .. ";" .. (gender == 0 and "Bay" or "Bayan") .. ";" .. exports.cr_global:formatDate(day or 1) .. " " .. exports.cr_global:numberToMonth(month or 1) .. " " .. exports.cr_global:getBirthYearFromAge(age) .. ";" .. fingerprint)
-					exports.cr_global:giveItem(client, 160, 1)
-			
-					setElementData(client, "dbid", nil)
-					triggerClientEvent(client, "account.newCharacter", client, 3, tonumber(id))
-				end
-			end, {client, characterName, race, gender, skin, height, weight, age, languageselected, month, day}, exports.cr_mysql:getConnection(), "SELECT id FROM characters WHERE id = LAST_INSERT_ID()")
-		end
-	end, {client, characterName, race, gender, skin, height, weight, age, languageselected, month, day}, exports.cr_mysql:getConnection(), "SELECT charactername FROM characters WHERE charactername='" .. (characterName) .. "'")
-end
-addEvent("account.newCharacter", true)
-addEventHandler("account.newCharacter", root, newCharacter)
-
 function adminLoginToPlayerCharacter(thePlayer, commandName, ...)
     if exports.cr_integration:isPlayerLeaderAdmin(thePlayer) then
         if not (...) then
             outputChatBox("KULLANIM: /" .. commandName .. " [Karakter Adı]", thePlayer, 255, 194, 14)
         else
             targetChar = table.concat({...}, "_")
-            dbQuery(loginCharacterAdminCallback, {thePlayer, targetChar}, mysql:getConnection(), "SELECT `characters`.`id` AS `targetCharID` , `characters`.`account` AS `targetUserID` , `accounts`.`admin` AS `targetAdminLevel`, `accounts`.`username` AS `targetUsername`, `characters`.`charactername` AS `targetCharacterName` FROM `characters` LEFT JOIN `accounts` ON `characters`.`account`=`accounts`.`id` WHERE `charactername`='" .. mysql:escape_string(tostring(targetChar)) .. "' LIMIT 1")
+            dbQuery(loginCharacterAdminCallback, {thePlayer, targetChar}, exports.cr_mysql:getConnection(), "SELECT `characters`.`id` AS `targetCharID` , `characters`.`account` AS `targetUserID` , `accounts`.`admin` AS `targetAdminLevel`, `accounts`.`username` AS `targetUsername`, `characters`.`charactername` AS `targetCharacterName` FROM `characters` LEFT JOIN `accounts` ON `characters`.`account`=`accounts`.`id` WHERE `charactername`='" .. exports.cr_mysql:escape_string(tostring(targetChar)) .. "' LIMIT 1")
         end
     else
 		outputChatBox("[!]#FFFFFF Bu komutu kullanabilmek için gerekli yetkiye sahip değilsiniz.", thePlayer, 255, 0, 0, true)
@@ -667,7 +696,7 @@ function loginCharacterAdminCallback(qh, thePlayer, name)
 			outputChatBox("[!]#FFFFFF Başarıyla " .. targetCharacterName:gsub("_"," ") .. " (" .. targetUsername .. ") isimli oyuncunun karakterine giriş yaptınız.", thePlayer, 0, 255, 0, true)
 			exports.cr_global:sendMessageToAdmins("[GİRİŞ] " .. exports.cr_global:getPlayerFullAdminTitle(thePlayer) .. " isimli yetkili " .. targetCharacterName:gsub("_", " ") .. " " .. targetUsername .. " isimli oyuncunun karakterine giriş yaptı.")
 			exports.cr_discord:sendMessage("loginto-log", "[LOGINTO] " .. exports.cr_global:getPlayerFullAdminTitle(thePlayer) .. " isimli yetkili " .. targetCharacterName:gsub("_", " ") .. " " .. targetUsername .. " isimli oyuncunun karakterine giriş yaptı.")
-            spawnCharacter(targetCharID, targetUserID, thePlayer, targetUsername)
+            joinCharacter(targetCharID, targetUserID, thePlayer, targetUsername)
         end
 	else
 		outputChatBox("[!]#FFFFFF Karakter adı bulunamadı.", thePlayer, 255, 0, 0, true)
@@ -675,48 +704,65 @@ function loginCharacterAdminCallback(qh, thePlayer, name)
 	end
 end
 
-addEvent("account.requestPlayerInfo", true)
-addEventHandler("account.requestPlayerInfo", root, function()
-    if client ~= source then return end
-    triggerEvent("account.resetPlayer", client)
-	dbQuery(function(queryHandler, client)
-        local res, rows, err = dbPoll(queryHandler, 0)
-        if rows > 0 and res[1] then
-            local data = res[1]
-            if data then
-                local admin = tostring(data.admin) or "Bilinmiyor"
-                local reason = tostring(data.reason) or "Bilinmiyor"
-                local date = tostring(data.date) or "Bilinmiyor"
-                local endTick = tonumber(data.end_tick) or 0
-                triggerClientEvent(client, "account.banScreen", client, { admin, reason, date, endTick })
-            end
-        end
-    end, {client}, mysql:getConnection(), "SELECT * FROM bans WHERE serial = ?", mysql:escape_string(tostring(getPlayerSerial(client))))
-end)
+function changePassword(thePlayer, commandName, password, passwordAgain)
+	if password and passwordAgain then
+		if string.len(password) >= 6 and string.len(password) <= 32 then
+			if password == passwordAgain then
+				local serial = getPlayerSerial(thePlayer)
+				if not isTimer(passwordTimer[serial]) then
+					local accountID = getElementData(thePlayer, "account:id")
+					local salt = exports.cr_global:generateSalt(16)
+					local saltedPassword = salt .. password 
+					local hashedPassword = string.lower(hash("sha256", saltedPassword))
+					
+					dbExec(exports.cr_mysql:getConnection(), "UPDATE accounts SET password = ?, salt = ? WHERE id = ? LIMIT 1", hashedPassword, salt, accountID)
+					
+					outputChatBox("[!]#FFFFFF Hesab şifrəniz uğurla dəyişdirildi.", thePlayer, 0, 255, 0, true)
+					triggerClientEvent(thePlayer, "playSuccessfulSound", thePlayer)
+					
+					passwordTimer[serial] = setTimer(function() end, 1000 * 60, 1)
+				else
+					local timer = getTimerDetails(passwordTimer[serial])
+					outputChatBox("[!]#FFFFFF Şifrənizi yenidən dəyişmək üçün " .. math.floor(timer / 1000)  .. " saniyə gözləmək lazımdır.", thePlayer, 255, 0, 0, true)
+					playSoundFrontEnd(thePlayer, 4)
+				end
+			else
+				outputChatBox("[!]#FFFFFF Şifrələr uyğun gəlmir.", thePlayer, 255, 0, 0, true)
+				playSoundFrontEnd(thePlayer, 4)
+			end
+		else
+			outputChatBox("[!]#FFFFFF Şifrə 6 ilə 32 simvol arasında olmalıdır.", thePlayer, 255, 0, 0, true)
+			playSoundFrontEnd(thePlayer, 4)
+		end
+	else
+		outputChatBox("SYNTAX: /" .. commandName .. " [Yeni Şifrəniz] [Yeni Şifrəniz 2x]", thePlayer, 255, 194, 14)
+	end
+end
+addCommandHandler("sifredeyistir", changePassword, false, false)
 
-addEvent("account.resetPlayerName", true)
-addEventHandler("account.resetPlayerName", root, function(oldNick, newNick)
-	if client ~= source then return end
-	setElementData(client, "legitnamechange", 1)
-	setPlayerName(client, oldNick)
-	setElementData(client, "legitnamechange", 0)
-	exports.cr_global:sendMessageToAdmins("[ADM] " .. tostring(oldNick) .. " isimli oyuncu kendi adını değiştirmek için çalıştı, " .. tostring(newNick) .. ".")
-end)
-
-addEventHandler("onPlayerJoin", root, function()
-	setElementData(source, "loggedin", 0)
-	setElementData(source, "account:loggedin", false)
-	setElementData(source, "account:username", "")
-	setElementData(source, "account:id", 0)
-	setElementData(source, "dbid", false)
-	setElementData(source, "admin_level", 0)
-	setElementData(source, "hiddenadmin", 0)
-	setElementData(source, "globalooc", 1)
-	setElementData(source, "muted", 0)
-	setElementData(source, "loginattempts", 0)
-	setElementData(source, "timeinserver", 0)
-	setElementData(source, "chatbubbles", 0)
-	setElementData(source, "headTurning", true)
-	setElementData(source, "voiceChannel", exports.cr_voice:getDefaultVoiceChannel())
-	exports.cr_global:updateNametagColor(source)
-end)
+function setOlke(thePlayer, commandName, targetPlayer, country)
+	if exports.cr_integration:isPlayerTrialAdmin(thePlayer) then
+		if country and tonumber(country) then
+			country = tonumber(country)
+			if country >= 0 and country <= #countries then
+				local targetPlayer, targetPlayerName = exports.cr_global:findPlayerByPartialNick(thePlayer, targetPlayer)
+				if targetPlayer then
+					local dbid = getElementData(targetPlayer, "dbid")
+					setElementData(targetPlayer, "country", country)
+					dbExec(exports.cr_mysql:getConnection(), "UPDATE characters SET country = ? WHERE id = ?", country, dbid)
+					outputChatBox("[!]#FFFFFF " .. targetPlayerName .. " adlı oyunçunun ölkəsi [" .. country .. "] olaraq dəyişdirildi.", thePlayer, 0, 255, 0, true)
+					outputChatBox("[!]#FFFFFF " .. exports.cr_global:getPlayerFullAdminTitle(thePlayer) .. " adlı yetkili ölkənizi [" .. country .. "] olaraq dəyişdirdi.", targetPlayer, 0, 0, 255, true)
+				end
+			else
+				outputChatBox("[!]#FFFFFF Bu rəqəmlə heç bir ölkə yoxdur.", thePlayer, 255, 0, 0, true)
+				playSoundFrontEnd(thePlayer, 4)
+			end
+		else
+			outputChatBox("SYNTAX: /" .. commandName .. " [Xarakter Adı / ID] [Ölkə ID]", thePlayer, 255, 194, 14)
+		end
+	else
+		outputChatBox("[!]#FFFFFF Kifayət qədər səlahiyyətiniz yoxdur.", thePlayer, 255, 0, 0, true)
+		playSoundFrontEnd(thePlayer, 4)
+	end
+end
+addCommandHandler("setolke", setOlke, false, false)

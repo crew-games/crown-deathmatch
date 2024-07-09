@@ -79,7 +79,7 @@ function itemPropertiesGUI(object)
 
 		GUIEditor.button[1] = guiCreateButton(62, 35, 240, 25, "Define", false, GUIEditor.tab[2])
 			addEventHandler("onClientGUIClick", GUIEditor.button[1], 
-				function ()
+				function()
 					local num = 1
 					local action = "use"
 					local type
@@ -100,7 +100,7 @@ function itemPropertiesGUI(object)
 
 		GUIEditor.button[2] = guiCreateButton(62, 99, 240, 25, "Define", false, GUIEditor.tab[2])
 			addEventHandler("onClientGUIClick", GUIEditor.button[2], 
-				function ()
+				function()
 					local num = 2
 					local action = "move"
 					local type
@@ -121,7 +121,7 @@ function itemPropertiesGUI(object)
 
 		GUIEditor.button[3] = guiCreateButton(62, 166, 240, 25, "Define", false, GUIEditor.tab[2])
 			addEventHandler("onClientGUIClick", GUIEditor.button[3], 
-				function ()
+				function()
 					local num = 3
 					local action = "pickup"
 					local type
@@ -153,7 +153,7 @@ function itemPropertiesGUI(object)
 				end
 			end
 			addEventHandler("onClientGUIComboBoxAccepted", GUIEditor.combobox[1], 
-				function ()
+				function()
 					local num = 1
 					local combo = GUIEditor.combobox[num]
 					local btn = GUIEditor.button[num]
@@ -183,7 +183,7 @@ function itemPropertiesGUI(object)
 				end
 			end
 			addEventHandler("onClientGUIComboBoxAccepted", GUIEditor.combobox[2], 
-				function ()
+				function()
 					local num = 2
 					local combo = GUIEditor.combobox[num]
 					local btn = GUIEditor.button[num]
@@ -213,7 +213,7 @@ function itemPropertiesGUI(object)
 				end
 			end
 			addEventHandler("onClientGUIComboBoxAccepted", GUIEditor.combobox[3], 
-				function ()
+				function()
 					local num = 3
 					local combo = GUIEditor.combobox[num]
 					local btn = GUIEditor.button[num]
@@ -373,7 +373,7 @@ function showDataSet(type, action, oldData)
         inputDataMemo = guiCreateMemo(13, 32, 402, 91, oldText, false, dataWindow)
         local btn = guiCreateButton(16, 126, 392, 32, "Set Data", false, dataWindow)
 			addEventHandler("onClientGUIClick", btn, 
-				function ()
+				function()
 					local querystring = guiGetText(inputDataMemo)
 					local newData = {querystring}
 

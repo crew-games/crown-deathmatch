@@ -4,22 +4,25 @@ theme = exports.cr_ui:useTheme()
 fonts = exports.cr_ui:useFonts()
 seasonFonts = {
     season1 = exports.cr_fonts:getFont("sf-bold", 105),
-    season1_nametag = exports.cr_fonts:getFont("sf-bold", 75),
+    season1_nametag = exports.cr_fonts:getFont("sf-bold", 15),
     
 	season2 = dxCreateFont("public/fonts/2.ttf", 105),
-    season2_nametag = dxCreateFont("public/fonts/2.ttf", 75),
+    season2_nametag = dxCreateFont("public/fonts/2.ttf", 15),
     
 	season3 = dxCreateFont("public/fonts/3.ttf", 105),
-    season3_nametag = dxCreateFont("public/fonts/3.ttf", 75),
+    season3_nametag = dxCreateFont("public/fonts/3.ttf", 15),
     
 	season4 = dxCreateFont("public/fonts/4.ttf", 105),
-    season4_nametag = dxCreateFont("public/fonts/4.ttf", 75),
+    season4_nametag = dxCreateFont("public/fonts/4.ttf", 15),
     
 	season5 = dxCreateFont("public/fonts/5.ttf", 100),
     season5_nametag = dxCreateFont("public/fonts/5.ttf", 25),
 	
     season6 = dxCreateFont("public/fonts/6.ttf", 50),
-    season6_nametag = dxCreateFont("public/fonts/6.ttf", 20),
+    season6_nametag = dxCreateFont("public/fonts/6.ttf", 15),
+	
+    season7 = dxCreateFont("public/fonts/7.otf", 100),
+    season7_nametag = dxCreateFont("public/fonts/7.otf", 25),
 }
 
 function dxDrawBorderedText(outline, outlineColor, text, left, top, right, bottom, color, scale, font, alignX, alignY, clip, wordBreak, postGUI, colorCoded, subPixelPositioning, fRotation, fRotationCenterX, fRotationCenterY)
@@ -71,8 +74,3 @@ function smoothMoveCamera(x1, y1, z1, x1t, y1t, z1t, x2, y2, z2, x2t, y2t, z2t, 
     addEventHandler("onClientPreRender", root, camRender)
     return true
 end
-
-addCommandHandler("camera", function()
-    local x, y, z, lx, ly, lz = getCameraMatrix()
-    outputChatBox(x .. ", " .. y .. ", " .. z .. ", " .. lx .. ", " .. ly .. ", " .. lz)
-end)

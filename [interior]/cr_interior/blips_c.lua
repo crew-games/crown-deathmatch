@@ -59,7 +59,7 @@ function drawAllMyInteriorBlips()
 		killTimer(timerDraw)
 		timerDraw = nil
 	end
-	timerDraw = setTimer(function ()
+	timerDraw = setTimer(function()
 		getAllMyInteriors()
 		for i, interior in pairs(myInteriorsToDraw) do
 			local icon = nil

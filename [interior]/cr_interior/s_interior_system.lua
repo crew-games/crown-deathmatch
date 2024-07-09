@@ -125,10 +125,9 @@ function cleanupProperty(id, donotdestroy)
 			safeTable[id] = nil
 		end
 		
-		setTimer (function () 
+		setTimer(function() 
 			call(getResourceFromName("cr_items"), "deleteAllItemsWithinInt", id, 0, "CLEANUPINT") 
 		end, 3000, 1)
-		
 	end
 end
 
@@ -513,9 +512,8 @@ function loadAllInteriors()
 		end,
 	mysql:getConnection(), "SELECT `id` FROM `interiors` WHERE `deleted` = '0'")
 
-	setInteriorSoundsEnabled (false) -- Farid
+	setInteriorSoundsEnabled(false)
 end
---setTimer(loadAllInteriors, timerLoadAllInteriors, 1)
 addEventHandler("onResourceStart", resourceRoot, loadAllInteriors)
 
 function buyInterior(player, pickup, cost, isHouse, isRentable)
@@ -1493,7 +1491,7 @@ function timedInteriorView(thePlayer, houseID)
 		outputChatBox("You are now viewing this property. You will be unable to drop any items. You may exit your viewing by leaving the interior, or wait for the 60 second timer.", thePlayer, 0, 255, 0)
 		setElementData(thePlayer, "viewingInterior", 1, true)
 		viewingTimer = setTimer(function()
-					endTimedInteriorView(thePlayer, houseID)
+			endTimedInteriorView(thePlayer, houseID)
 		end, 60000, 1)
 	else
 		outputChatBox("Invalid House.", thePlayer, 255, 0, 0)

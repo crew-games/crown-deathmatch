@@ -1,7 +1,8 @@
 local colors = {
     [1] = tocolor(255, 212, 59, 255),
     [2] = "#FFD43B",
-    [3] = "tl:FFFFD43B tr:FFFFD43B bl:FFFFD43B br:FFFFD43B"
+    [3] = "tl:FFFFD43B tr:FFFFD43B bl:FFFFD43B br:FFFFD43B",
+	[4] = {255, 212, 59}
 }
 
 function getServerColor(type, alpha)
@@ -14,6 +15,8 @@ function getServerColor(type, alpha)
 		return colors[2]
 	elseif type == 3 then
 		return colors[3]
+	elseif type == 4 then
+		return colors[4]
 	else
 		return tocolor(255, 255, 255, 255)
 	end

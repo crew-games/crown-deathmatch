@@ -307,7 +307,7 @@ end
 function renderScoreboard()
     local serverNameTextWidth = dxGetTextWidth(serverName, 1, fonts.headerBold)
     dxDrawText(serverName, panelX, panelY - 40, 0, 0, tocolor(225, 225, 230), 1, fonts.headerBold, "left", "top")
-    dxDrawText('DEATHPLAY', panelX + serverNameTextWidth + 3, panelY - 40, 0, 0, tocolor(225, 225, 230), 1, fonts.headerLight, "left", "top")
+    dxDrawText('DEATHMATCH', panelX + serverNameTextWidth + 3, panelY - 40, 0, 0, tocolor(225, 225, 230), 1, fonts.headerLight, "left", "top")
 
     renderColumn({
         x = panelX,

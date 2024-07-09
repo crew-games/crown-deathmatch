@@ -145,7 +145,7 @@ function isLocalPlayerSmoking()
 end
 --[[
 addEventHandler("onClientPreRender",root,
-  function ()
+  function()
     daBlock, daAnim = getPedAnimation(localPlayer)
     setElementData(root,"blockz",daBlock)
     setElementData(root,"animz",daAnim)

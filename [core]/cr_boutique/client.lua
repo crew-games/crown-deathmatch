@@ -10,6 +10,7 @@ setElementDimension(ped, 0)
 setElementInterior(ped, 0)
 setElementFrozen(ped, true)
 setElementData(ped, "name", "Kıyafet Mağazası")
+setElementData(ped, "talk", 1)
 
 function renderBoutique()
 	if getElementData(localPlayer, "loggedin") == 1 then

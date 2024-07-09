@@ -234,7 +234,7 @@ streamingTimer = setTimer(checkElements, 3000, 0)
 --]]
 
 addEventHandler("onClientElementStreamIn", root,
-    function ()
+    function()
         local elementType = getElementType(source)
         if elementType == "object" or elementType == "vehicle" then
         	if unshaded[source] and #unshaded[source] > 0 then
@@ -249,7 +249,7 @@ addEventHandler("onClientElementStreamIn", root,
     end
 );
 addEventHandler("onClientElementStreamOut", root,
-    function ()
+    function()
        local elementType = getElementType(source)
        if elementType == "object" or elementType == "vehicle" then
         	if loaded[source] and #loaded[source] > 0 then

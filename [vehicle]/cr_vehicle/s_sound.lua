@@ -36,7 +36,7 @@ local function playHorn (thePlayer, key, keyState)
 end
 
 addEventHandler ("onResourceStart", resourceRoot,
-    function ()
+    function()
         for _, player in ipairs (getElementsByType ("player")) do
             bindKey (player, "H", "down", playHorn)
             bindKey (player, "H", "up", playHorn)
@@ -45,7 +45,7 @@ addEventHandler ("onResourceStart", resourceRoot,
    )
      
 addEventHandler ("onPlayerJoin", root,
-    function ()
+    function()
         bindKey (source, "H", "down", playHorn)
         bindKey (source, "H", "up", playHorn)
     end

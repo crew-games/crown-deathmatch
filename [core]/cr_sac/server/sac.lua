@@ -46,6 +46,7 @@ local protectedDatas = {
 	["pass_level"] = true,
 	["pass_xp"] = true,
 	["voiceChannel"] = true,
+	["chat:status"] = true,
 }
 local dataChangeCount = {}
 local eventUsingPlayers = {}
@@ -313,7 +314,7 @@ addEventHandler("onDebugMessage", root, function(msg)
             sendMessage(">> Serial: " .. getPlayerSerial(thePlayer))
             sendMessage(">> Event: " .. eventName)
 			
-			kickPlayer(thePlayer, "Shine Anti-Cheat", "SAC #11")
+			--kickPlayer(thePlayer, "Shine Anti-Cheat", "SAC #11")
         end
     end
 end)

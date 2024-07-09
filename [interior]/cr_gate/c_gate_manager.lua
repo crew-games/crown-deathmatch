@@ -549,4 +549,4 @@ function getGateElementFromID(id)
 end
 
 
-addEventHandler("onClientResourceStop", root, function () guiSetInputEnabled(false) showCursor(false) end)
+addEventHandler("onClientResourceStop", root, function() guiSetInputEnabled(false) showCursor(false) end)

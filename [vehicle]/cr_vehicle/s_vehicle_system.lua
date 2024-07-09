@@ -3,9 +3,8 @@ mysql = exports.cr_mysql
 local null = mysql_null()
 local toLoad = {}
 local threads = {}
---local vehicleTempPosList = {}
 
-function SmallestID() -- finds the smallest ID in the SQL instead of auto increment
+function SmallestID()
 	local result = mysql:query_fetch_assoc("SELECT MIN(e1.id+1) AS nextID FROM vehicles AS e1 LEFT JOIN vehicles AS e2 ON e1.id +1 = e2.id WHERE e2.id IS NULL")
 	if result then
 		local id = tonumber(result["nextID"]) or 1
@@ -14,19 +13,16 @@ function SmallestID() -- finds the smallest ID in the SQL instead of auto increm
 	return false
 end
 
--- WORKAROUND ABIT
 function getVehicleName(vehicle)
 	return exports.cr_global:getVehicleName(vehicle)
 end
 
--- /makeveh
 function createPermVehicle(thePlayer, commandName, ...)
-	if exports.cr_integration:isPlayerLeaderAdmin(thePlayer) or exports.cr_integration:isPlayerVehicleConsultant(thePlayer) then
+	if exports.cr_integration:isPlayerManager(thePlayer) then
 		local args = {...}
 		if (#args < 7) then
 			printMakeVehError(thePlayer, commandName)
 		else
-
 			local vehShopData = exports["cr_vehicle-manager"]:getInfoFromVehShopID(tonumber(args[1]))
 			if not vehShopData then
 				outputDebugString("VEHICLE SYSTEM / createPermVehicle / FAILED TO FETCH VEHSHOP DATA")
@@ -169,9 +165,8 @@ function printMakeVehError(thePlayer, commandName)
 	outputChatBox("NOTE: If it is a faction vehicle, the cost is taken from the faction fund, rather than the player.", thePlayer, 255, 194, 14)
 end
 
--- /makecivveh
 function createCivilianPermVehicle(thePlayer, commandName, ...)
-	if (exports.cr_integration:isPlayerLeaderAdmin(thePlayer)) then
+	if exports.cr_integration:isPlayerManager(thePlayer) then
 		local args = {...}
 		if (#args < 4) then
 			outputChatBox("KULLANIM: /" .. commandName .. " [id/name] [color1 (-1 for random)] [color2 (-1 for random)] [Job ID -1 for none]", thePlayer, 255, 194, 14)
@@ -183,7 +178,7 @@ function createCivilianPermVehicle(thePlayer, commandName, ...)
 			local vehicleID = tonumber(args[1])
 			local col1, col2, job
 
-			if not vehicleID then -- vehicle is specified as name
+			if not vehicleID then
 				local vehicleEnd = 1
 				repeat
 					vehicleID = getVehicleModelFromName(table.concat(args, " ", 1, vehicleEnd))
@@ -239,6 +234,9 @@ function createCivilianPermVehicle(thePlayer, commandName, ...)
 				end
 			end
 		end
+	else
+		outputChatBox("[!]#FFFFFF Bu komutu kullanabilmek için Üst Yönetim Kurulu üyesi olmanız gerekiyor.", thePlayer, 255, 0, 0, true)
+		playSoundFrontEnd(thePlayer, 4)
 	end
 end
 addCommandHandler("makecivveh", createCivilianPermVehicle, false, false)
@@ -246,22 +244,19 @@ addCommandHandler("makecivveh", createCivilianPermVehicle, false, false)
 vehicleData = {}
 
 function loadAllVehicles(res)
-	
 	local vehicleLoadList = {}
-	dbQuery(
-		function(qh)
-			local res, rows, err = dbPoll(qh, 0)
-			if rows > 0 then
-				Async:foreach(res, function(row)
-					vehicleData[tonumber(row.id)] = {}
-					for key, value in pairs(row) do
-						vehicleData[tonumber(row.id)][key] = value
-					end
-					loadOneVehicle(row.id)
-				end)
-			end
-		end,
-	mysql:getConnection(), "SELECT * FROM `vehicles` WHERE deleted=0 ORDER BY `id` ASC")
+	dbQuery(function(qh)
+		local res, rows, err = dbPoll(qh, 0)
+		if rows > 0 then
+			Async:foreach(res, function(row)
+				vehicleData[tonumber(row.id)] = {}
+				for key, value in pairs(row) do
+					vehicleData[tonumber(row.id)][key] = value
+				end
+				loadOneVehicle(row.id)
+			end)
+		end
+	end, mysql:getConnection(), "SELECT * FROM `vehicles` WHERE deleted = 0 ORDER BY `id` ASC")
 end
 addEventHandler("onResourceStart", resourceRoot, loadAllVehicles)
 
@@ -278,7 +273,6 @@ function reloadVehicle(id)
 		exports['cr_save']:saveVehicle(theVehicle)
 		destroyElement(theVehicle)
 	end
-	--vehicleTempPosList = exports["cr_admin"]:getVehTempPosList() or false
 	loadOneVehicle(id, false)
 	return true
 end
@@ -445,26 +439,12 @@ function loadOneVehicle(id, hasCoroutine, loadDeletedOne)
 				end
 			end
 
-			-- insurance stuff
 			if exports.cr_global:isResourceRunning("cr_insurance") then
         		setElementData(veh, "insurance:fee", row.premium or 0, false, true)
         		setElementData(veh, "insurance:faction", row.insurancefaction or 0, false, true)
             end
 
-			-- interior/dimension
-
-			--[[if vehicleTempPosList then
-				setElementInterior(veh, vehicleTempPosList[tonumber(row.id)]["int"])
-				setElementDimension(veh, vehicleTempPosList[tonumber(row.id)]["dim"])
-				setElementPosition(veh, vehicleTempPosList[tonumber(row.id)]["x"], vehicleTempPosList[tonumber(row.id)]["y"], vehicleTempPosList[tonumber(row.id)]["z"])
-				setElementRotation(veh, vehicleTempPosList[tonumber(row.id)]["rx"], vehicleTempPosList[tonumber(row.id)]["ry"], vehicleTempPosList[tonumber(row.id)]["rz"])
-			else
-				setElementDimension(veh, row.currdimension)
-				setElementInterior(veh, row.currinterior)
-			end
-			]]
-
-			setElementDimension(veh, row.currdimension)
+			setElementDimension(veh, 33333)
 			setElementInterior(veh, row.currinterior)
 
 			setElementData(veh, "dimension", row.dimension, false)

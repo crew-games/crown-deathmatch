@@ -34,10 +34,11 @@ Bigmap.MinimumZoom = 1
 Bigmap.MaximumZoom = 3
 Bigmap.MapVignette = dxCreateTexture(radarSettings["mapVignette"])
 
-Fonts = {}
+Fonts = exports.cr_ui:useFonts()
 Fonts.SweetSixteen1 = exports.cr_fonts:getFont("SweetSixteen", 20)
 Fonts.SweetSixteen2 = exports.cr_fonts:getFont("SweetSixteen", 30)
 Fonts.SweetSixteen3 = exports.cr_fonts:getFont("SweetSixteen", 22)
+Theme = exports.cr_ui:useTheme()
 
 Stats = {}
 Stats.Bar = {}
@@ -55,18 +56,6 @@ addEventHandler("onClientResourceStart", resourceRoot, function()
 	end
 end)
 
-function RadarTrue()
-	Minimap.IsVisible = true
-end
-addEvent("onRadarTrue", true)
-addEventHandler("onRadarTrue", root, RadarTrue)
-
-function RadarFalse()
-	Minimap.IsVisible = false
-end
-addEvent("onRadarFalse", true)
-addEventHandler("onRadarFalse", root, RadarFalse)
-
 addEventHandler("onClientKey", root, function(key, state)
 	if (state) then
 		if (key == "F11") then
@@ -76,16 +65,14 @@ addEventHandler("onClientKey", root, function(key, state)
 			
 			if (Bigmap.IsVisible) then
 				showChat(false)
-				playSoundFrontEnd(1)
 				Minimap.IsVisible = false
 				showCursor(true)
 				setElementData(localPlayer, "hud_settings", {})
 			else
 				showChat(true)
-				playSoundFrontEnd(2)
 				Minimap.IsVisible = true
 				mapOffsetX, mapOffsetY, mapIsMoving = 0, 0, false
-				triggerEvent("hud:loadSettings", localPlayer)
+				triggerEvent("hud.loadSettings", localPlayer)
 			end
 		elseif (key == "mouse_wheel_down" and Bigmap.IsVisible) then
 			Bigmap.CurrentZoom = math.min(Bigmap.CurrentZoom + 0.5, Bigmap.MaximumZoom)
@@ -117,7 +104,7 @@ setTimer(function()
 	if getElementData(localPlayer, "loggedin") == 1 then
 		if (not Minimap.IsVisible and Bigmap.IsVisible) then
 			local absoluteX, absoluteY = 0, 0
-			local zoneName = "Unknown"
+			local zoneName = "Bilinmiyor"
 			
 			if (getElementInterior(localPlayer) == 0) then
 				if (isCursorShowing()) then
@@ -148,7 +135,7 @@ setTimer(function()
 					local areaX, areaY = getElementPosition(area)
 					local areaWidth, areaHeight = getRadarAreaSize(area)
 					local areaR, areaG, areaB, areaA = getRadarAreaColor(area)
-						
+					
 					if (isRadarAreaFlashing(area)) then
 						areaA = areaA * math.abs(getTickCount() % 1000 - 500) / 500
 					end
@@ -200,20 +187,22 @@ setTimer(function()
 					dxDrawRectangle(areaX, areaY, areaWidth, areaHeight, tocolor(areaR, areaG, areaB, areaA), false)
 				end
 				
+				local columnY = 0
+				
 				--> Blips
 				for _, blip in ipairs(getElementsByType("blip")) do
 					local blipX, blipY, blipZ = getElementPosition(blip)
 
 					if (localPlayer ~= getElementAttachedTo(blip)) then
 						local blipSettings = {
-							["color"] = {255, 255, 255, 255},
-							["size"] = getElementData(blip, "blipSize") or 20,
+							["color"] = { 255, 255, 255, 255 },
+							["size"] = 24,
 							["icon"] = getBlipIcon(blip) or "target",
-							["exclusive"] = getElementData(blip, "exclusiveBlip") or false
+							["name"] = getElementData(blip, "name") or "?",
 						}
 						
 						if (blipSettings["icon"] == 0 or blipSettings["icon"] == "waypoint") then
-							blipSettings["color"] = {getBlipColor(blip)}
+							blipSettings["color"] = { getBlipColor(blip) }
 						end
 						
 						local centerX, centerY = (Bigmap.PosX + (Bigmap.Width / 2)), (Bigmap.PosY + (Bigmap.Height / 2))
@@ -226,7 +215,29 @@ setTimer(function()
 						centerX = math.max(leftFrame, math.min(rightFrame, blipX))
 						centerY = math.max(topFrame, math.min(bottomFrame, blipY))
 
-						dxDrawImage(centerX - (blipSettings["size"] / 2), centerY - (blipSettings["size"] / 2), blipSettings["size"], blipSettings["size"], "images/blips/" .. blipSettings["icon"] .. ".png", 0, 0, 0, tocolor(blipSettings["color"][1], blipSettings["color"][2], blipSettings["color"][3], blipSettings["color"][4]))
+						dxDrawImage(centerX - (blipSettings["size"] / 2), centerY - (blipSettings["size"] / 2), blipSettings["size"], blipSettings["size"], "public/images/blips/" .. blipSettings["icon"] .. ".png", 0, 0, 0, tocolor(blipSettings["color"][1], blipSettings["color"][2], blipSettings["color"][3], blipSettings["color"][4]))
+						
+						if exports.cr_ui:inArea(centerX - (blipSettings["size"] / 2), centerY - (blipSettings["size"] / 2), blipSettings["size"], blipSettings["size"]) then
+							local textWidth = dxGetTextWidth(blipSettings["name"], 1, Fonts.UbuntuLight.body)
+
+							exports.cr_ui:drawTooltip {
+								position = {
+									x = centerX - (blipSettings["size"] / 2),
+									y = centerY - (blipSettings["size"] / 2)
+								},
+								size = {
+									x = textWidth + 20,
+									y = 30
+								},
+
+								radius = 4,
+								text = blipSettings["name"],
+
+								align = "left",
+								alignY = "top",
+								hover = true,
+							}
+						end
 					end
 				end
 				
@@ -236,11 +247,32 @@ setTimer(function()
 				
 				if (blipX >= Bigmap.PosX and blipX <= Bigmap.PosX + Bigmap.Width) then
 					if (blipY >= Bigmap.PosY and blipY <= Bigmap.PosY + Bigmap.Height) then
-						dxDrawImage(blipX - 10, blipY - 10, 25, 25, "images/arrow.png", 360 - playerRotation)
+						dxDrawImage(blipX - 10, blipY - 10, 25, 25, "public/images/arrow.png", 360 - playerRotation)
 					end
 				end
 				
 				dxDrawImage(Bigmap.PosX, Bigmap.PosY, Bigmap.Width, Bigmap.Height, Bigmap.MapVignette, 0, -90, 0, tocolor(255, 255, 255, 255))
+				
+				for index, blip in ipairs(getElementsByType("blip")) do
+					if getElementData(blip, "name") then
+						local blipSettings = {
+							["color"] = { 255, 255, 255, 255 },
+							["size"] = 24,
+							["icon"] = getBlipIcon(blip) or "target",
+							["name"] = getElementData(blip, "name") or "?",
+						}
+						
+						if (blipSettings["icon"] == 0 or blipSettings["icon"] == "waypoint") then
+							blipSettings["color"] = { getBlipColor(blip) }
+						end
+						
+						dxDrawRectangle(Bigmap.PosX + Bigmap.Width - 250, Bigmap.PosY + columnY, 250, 30, index % 2 == 0 and exports.cr_ui:rgba(Theme.GRAY[900]) or exports.cr_ui:rgba(Theme.GRAY[800]))
+						dxDrawImage(Bigmap.PosX + Bigmap.Width - 243, Bigmap.PosY + columnY + 3, blipSettings["size"], blipSettings["size"], "public/images/blips/" .. blipSettings["icon"] .. ".png", 0, 0, 0, tocolor(blipSettings["color"][1], blipSettings["color"][2], blipSettings["color"][3], blipSettings["color"][4]))
+						dxDrawText(blipSettings["name"], Bigmap.PosX + Bigmap.Width - 237 + blipSettings["size"], Bigmap.PosY + columnY + 8, 0, 0, tocolor(255, 255, 255, 255), 1, Fonts.UbuntuRegular.caption)
+						columnY = columnY + 30
+					end
+				end
+				
 				dxDrawText(getZoneName(localX, localY, localZ), Bigmap.PosX + 25 + 1, Bigmap.PosY + 25 + 1, 1, 1, tocolor(0, 0, 0, 255), 1, Fonts.SweetSixteen2)
 				dxDrawText(getZoneName(localX, localY, localZ), Bigmap.PosX + 25, Bigmap.PosY + 25, 0, 0, tocolor(255, 255, 255, 255), 1, Fonts.SweetSixteen2)
 			end
@@ -289,29 +321,47 @@ setTimer(function()
 							dxSetBlendMode("blend")
 						end
 					end
+
+					--> Draw blips
+					for _, blip in ipairs(getElementsByType("blip")) do
+						local blipX, blipY, blipZ = getElementPosition(blip)
+						local blipSettings = {
+							["color"] = { 255, 255, 255, 255 },
+							["size"] = 24,
+							["icon"] = getBlipIcon(blip) or "target",
+						}
+						
+						if (blipSettings["icon"] == 0 or blipSettings["icon"] == "waypoint") then
+							blipSettings["color"] = { getBlipColor(blip) }
+						end
+						
+						local blipMapX, blipMapY = (3000 + blipX) / 6000 * Minimap.TextureSize, (3000 - blipY) / 6000 * Minimap.TextureSize
+						local blipScreenX, blipScreenY = (blipMapX - (playerMapX - mapRadius)) * (Minimap.BiggerTargetSize / (mapRadius * 2)), (blipMapY - (playerMapY - mapRadius)) * (Minimap.BiggerTargetSize / (mapRadius * 2))
+
+						if (doesCollide(0, 0, Minimap.BiggerTargetSize, Minimap.BiggerTargetSize, blipScreenX, blipScreenY, blipSettings["size"], blipSettings["size"])) then
+							dxDrawImage(blipScreenX - (blipSettings["size"] / 2), blipScreenY - (blipSettings["size"] / 2), blipSettings["size"], blipSettings["size"], "public/images/blips/" .. blipSettings["icon"] .. ".png", 0, 0, 0, tocolor(blipSettings["color"][1], blipSettings["color"][2], blipSettings["color"][3], blipSettings["color"][4]))
+						end
+					end
 					
-					--> Draw blip
 					dxSetRenderTarget(Minimap.RenderTarget, true)
 					dxDrawImage(Minimap.NormalTargetSize / 2, Minimap.NormalTargetSize / 2, Minimap.BiggerTargetSize, Minimap.BiggerTargetSize, Minimap.MapTarget, 0, 0, 0, tocolor(255, 255, 255, 255), false)
 					
-					local localX, localY, localZ = getElementPosition(localPlayer)
-					
 					--> Draw fully minimap
+					local localX, localY, localZ = getElementPosition(localPlayer)
 					dxSetRenderTarget()
 					dxDrawImageSection(Minimap.PosX, Minimap.PosY, Minimap.Width, Minimap.Height, Minimap.NormalTargetSize / 2 + (Minimap.BiggerTargetSize / 2) - (Minimap.Width / 2), Minimap.NormalTargetSize / 2 + (Minimap.BiggerTargetSize / 2) - (Minimap.Height / 2), Minimap.Width, Minimap.Height, Minimap.RenderTarget, 0, -90, 0, tocolor(255, 255, 255, 255))
 					dxDrawImage(Minimap.PosX, Minimap.PosY, Minimap.Width, Minimap.Height, Minimap.MapVignette, 0, -90, 0, tocolor(255, 255, 255, 255))
 					dxDrawText(getZoneName(localX, localY, localZ), Minimap.PosX + Minimap.Width + 1, Minimap.PosY + Minimap.Height - 45 + 1, Minimap.Width + 1, Minimap.Height + 1, tocolor(0, 0, 0, 255), 1, Fonts.SweetSixteen1, "right")
 					dxDrawText(getZoneName(localX, localY, localZ), Minimap.PosX + Minimap.Width, Minimap.PosY + Minimap.Height - 45, Minimap.Width, Minimap.Height, tocolor(255, 255, 255, 255), 1, Fonts.SweetSixteen1, "right")
-					dxDrawImage((Minimap.PosX + (Minimap.Width / 2)) - 10, (Minimap.PosY + (Minimap.Height / 2)) - 10, 24, 24, "images/arrow.png", 360 - playerRotation)
+					dxDrawImage((Minimap.PosX + (Minimap.Width / 2)) - 10, (Minimap.PosY + (Minimap.Height / 2)) - 10, 24, 24, "public/images/arrow.png", 360 - playerRotation)
 				end
 			end
 		end
 		
 		if isPlayerHudComponentVisible("radar") then
 			playerX, playerY, playerZ = getElementPosition(localPlayer)
-			local playerZoneName = getZoneName(playerX, playerY, playerZ)
-			dxDrawText(playerZoneName, 1, 1, Display.Width * 0.265 + 1, Display.Height * 0.975 + 1, tocolor(0, 0, 0, 255), 1, Fonts.SweetSixteen3, "center", "bottom")
-			dxDrawText(playerZoneName, 0, 0, Display.Width * 0.265, Display.Height * 0.975, tocolor(255, 255, 255, 255), 1, Fonts.SweetSixteen3, "center", "bottom")
+			dxDrawText(getZoneName(playerX, playerY, playerZ), 1, 1, Display.Width * 0.265 + 1, Display.Height * 0.975 + 1, tocolor(0, 0, 0, 255), 1, Fonts.SweetSixteen3, "center", "bottom")
+			dxDrawText(getZoneName(playerX, playerY, playerZ), 0, 0, Display.Width * 0.265, Display.Height * 0.975, tocolor(255, 255, 255, 255), 1, Fonts.SweetSixteen3, "center", "bottom")
 		end
 	end
 end, 0, 0)

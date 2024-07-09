@@ -84,31 +84,7 @@ function showIntName(name, ownerName, inttype, cost, ID, bizMsg)
 			gBuyMessage = guiCreateLabel(0.0, 0.915, 1.0, 0.3, msg, true)
 			guiSetFont(gBuyMessage, "default")
 			guiLabelSetHorizontalAlign(gBuyMessage, "center", true)
-			--guiSetAlpha(gBuyMessage, 0.0)
 		end
-		
-		--[[setTimer(function()
-			if gInteriorName then
-				destroyElement(gInteriorName)
-				gInteriorName = nil
-			end
-			
-			if isElement(gOwnerName) then
-				destroyElement(gOwnerName)
-				gOwnerName = nil
-			end
-			
-			if (gBuyMessage) then
-				destroyElement(gBuyMessage)
-				gBuyMessage = nil
-			end
-			
-			if (gBizMessage) then
-				destroyElement(gBizMessage)
-				gBizMessage = nil
-			end
-		end, 3000, 1)
-		]]
 		
 		timer = setTimer(fadeMessage, 50, 20, true)
 	end
@@ -545,27 +521,24 @@ function findParent(element, dimension)
 	return entrance
 end
 
---
 local inttimer = nil
---Farid NEW MELTHOD
+
 addEvent("setPlayerInsideInterior", true)
-addEventHandler("setPlayerInsideInterior", root,
-	function(targetLocation, targetInterior, furniture)
-		if not furniture then
-			furniture = true
-		end
-		engineSetAsynchronousLoading (false, true)
-		setTimer(function()
-			triggerServerEvent("onPlayerInteriorChange", localPlayer, 0, 0, targetLocation[INTERIOR_DIM], targetLocation[INTERIOR_INT])
-		end, (getElementData(localPlayer, "antifalling") == "1" and 8000 or 4000), 1)
-		for i = 0, 4 do
-    		setInteriorFurnitureEnabled(i, furniture and true or false)
-		end
+addEventHandler("setPlayerInsideInterior", root, function(targetLocation, targetInterior, furniture)
+	if not furniture then
+		furniture = true
 	end
-)
-
-
-
+	
+	engineSetAsynchronousLoading(false, true)
+	
+	setTimer(function()
+		triggerServerEvent("onPlayerInteriorChange", localPlayer, 0, 0, targetLocation[INTERIOR_DIM], targetLocation[INTERIOR_INT])
+	end, 1000, 1)
+	
+	for i = 0, 4 do
+		setInteriorFurnitureEnabled(i, furniture and true or false)
+	end
+end)
 
 addEvent("setPlayerInsideInterior2", true)
 addEventHandler("setPlayerInsideInterior2", root,
@@ -704,7 +677,7 @@ function showLoadingProgress(stats_numberOfInts, delayTime)
 	updateIconAlpha()
 	addEventHandler("onClientRender", root, updateIconAlpha)
 	
-	setTimer(function () 
+	setTimer(function() 
 		if help_icon then
 			removeIcon()
 		end
@@ -892,21 +865,21 @@ function startBuyingForFaction(byBank, interior, cost, isHouse, isRentable)
 	    exports.cr_global:centerWindow(GUIEditor.window[1])
 
 	    GUIEditor.button[1] = guiCreateButton(16, 34, 376, 34, "I'm buying this for myself (using my money)", false, GUIEditor.window[1])
-	    addEventHandler("onClientGUIClick", GUIEditor.button[1], function ()
+	    addEventHandler("onClientGUIClick", GUIEditor.button[1], function()
 	    	if source == GUIEditor.button[1] then
 	    		triggerServerEvent(byBank and "buypropertywithbank" or "buypropertywithcash", localPlayer, localPlayer, interior, cost, isHouse, isRentable)
 	    		closePropertyGUI()
 	    	end
 	    end)
 	    GUIEditor.button[2] = guiCreateButton(16, 78, 376, 34, "I'm buying this for faction (using faction bank)", false, GUIEditor.window[1])
-	    addEventHandler("onClientGUIClick", GUIEditor.button[2], function ()
+	    addEventHandler("onClientGUIClick", GUIEditor.button[2], function()
 	    	if source == GUIEditor.button[2] then
 	    		triggerServerEvent(byBank and "buypropertywithbank" or "buypropertywithcash", localPlayer, localPlayer, interior, cost, isHouse, isRentable, getElementData(localPlayer, "faction"))
 	    		closePropertyGUI()
 	    	end
 	    end)
 	    GUIEditor.button[3] = guiCreateButton(17, 122, 376, 34, "No, I changed my mind.", false, GUIEditor.window[1])   
-	    addEventHandler("onClientGUIClick", GUIEditor.button[3], function ()
+	    addEventHandler("onClientGUIClick", GUIEditor.button[3], function()
 	    	if source == GUIEditor.button[3] then
 	    		closeStartBuying()
 	    	end

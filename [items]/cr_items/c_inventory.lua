@@ -136,28 +136,6 @@ local function tooltip(x, y, text, text2, to_delete)
 	dxDrawText(text, x, y, x, y + height, tooltip_text_color, 1, font, "center", "center", false, false, true)
 end
 
-function roundedRectangle(x, y, w, h, borderColor, bgColor, postGUI)
-	if (x and y and w and h) then
-		if (not borderColor) then
-			borderColor = tocolor(0, 0, 0, 180)
-		end
-		if (not bgColor) then
-			bgColor = borderColor
-		end
-		dxDrawRectangle(x, y, w, h, bgColor, postGUI);
-		dxDrawRectangle(x + 2, y - 1, w - 4, 1, borderColor, postGUI);
-		dxDrawRectangle(x + 2, y + h, w - 4, 1, borderColor, postGUI);
-		dxDrawRectangle(x - 1, y + 2, 1, h - 4, borderColor, postGUI);
-		dxDrawRectangle(x + w, y + 2, 1, h - 4, borderColor, postGUI);
-        
-        --Sarkokba pötty:
-        dxDrawRectangle(x + 0.5, y + 0.5, 1, 2, borderColor, postGUI);
-        dxDrawRectangle(x + 0.5, y + h - 1.5, 1, 2, borderColor, postGUI);
-        dxDrawRectangle(x + w - 0.5, y + 0.5, 1, 2, borderColor, postGUI);
-        dxDrawRectangle(x + w - 0.5, y + h - 1.5, 1, 2, borderColor, postGUI);
-	end
-end
-
 local function inArea(x, y, xmin, xmax, ymin, ymax)
 	if (x >= xmin and x <= xmax and y >= ymin and y <= ymax) then
     	exports.cr_cursor:setCursor("all", "pointinghand")
@@ -425,7 +403,7 @@ addEventHandler("onClientRender", root,
 
 				isCursorOverInventory = inArea(cursorX, cursorY, x, sx, y, y + rows * sbox + spacer) or inArea(cursorX, cursorY, x2, x2 + sbox, y2, y2 + (jrows - irows + 1) * sbox + spacer)
 				dxDrawRectangle(x, y, columns * sbox + spacer, rows * sbox + spacer, background_color)
-				dxDrawImage(x-65, y+20, 40, 40, ":cr_ui/public/images/logos/solid.png", 0, 0, 0, exports.cr_ui:getServerColor(1))
+				dxDrawImage(x-65, y+20, 40, 40, ":cr_ui/public/images/logo.png", 0, 0, 0, exports.cr_ui:getServerColor(1))
 				
 				for i = 1, columns * 5 do
 					local col = math.floor((i - 1) / 5)
@@ -602,23 +580,9 @@ addEventHandler("onClientRender", root,
 	end
 )
 
-addEventHandler("recieveItems", root, 
-	function()
-		inventory = false
-	end
-)
-
-function dxDrawRoundedRectangle(x, y, width, height, radius, color, postGUI, subPixelPositioning)
-    dxDrawRectangle(x+radius, y+radius, width-(radius*2), height-(radius*2), color, postGUI, subPixelPositioning)
-    dxDrawCircle(x+radius, y+radius, radius, 180, 270, color, color, 16, 1, postGUI)
-    dxDrawCircle(x+radius, (y+height)-radius, radius, 90, 180, color, color, 16, 1, postGUI)
-    dxDrawCircle((x+width)-radius, (y+height)-radius, radius, 0, 90, color, color, 16, 1, postGUI)
-    dxDrawCircle((x+width)-radius, y+radius, radius, 270, 360, color, color, 16, 1, postGUI)
-    dxDrawRectangle(x, y+radius, radius, height-(radius*2), color, postGUI, subPixelPositioning)
-    dxDrawRectangle(x+radius, y+height-radius, width-(radius*2), radius, color, postGUI, subPixelPositioning)
-    dxDrawRectangle(x+width-radius, y+radius, radius, height-(radius*2), color, postGUI, subPixelPositioning)
-    dxDrawRectangle(x+radius, y, width-(radius*2), radius, color, postGUI, subPixelPositioning)
-end
+addEventHandler("recieveItems", root, function()
+	inventory = false
+end)
 
 addEventHandler("onClientClick", root,
 	function(button, state, cursorX, cursorY, worldX, worldY, worldZ)

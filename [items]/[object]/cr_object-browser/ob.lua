@@ -134,7 +134,7 @@ function startup ()
 	bindKey ("arrow_d", "down", scroll)
 	addEventHandler  ("onClientGUIClick", grid, changeobj)
 	addEventHandler ("onClientGUIClick", objclose, 
-		function ()
+		function()
 			showCursor (false)
 			guiSetVisible (objbrowser, false)
 			if previewobj then

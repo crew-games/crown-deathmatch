@@ -226,7 +226,7 @@ function editPlateWindow()
 		--Buttons
 
 		submitNP = guiCreateButton(0.1, 0.60, 0.8, 0.15, "Purchase (Cost: 2 GCs)", true, efinalWindow)
-		addEventHandler("onClientGUIClick", submitNP, function ()
+		addEventHandler("onClientGUIClick", submitNP, function()
 			if source == submitNP then
 				local data = guiGetText(newplates)
 				local vehid = tonumber(svnum)
@@ -288,7 +288,7 @@ function updateRegistration()
 		--Buttons
 
 		local submitNP2 = guiCreateButton(0.1, 0.60, 0.8, 0.15, (state == "Unregistered" and "Register (Cost: $175)" or "Unregister (Cost: $50)") , true, efinalWindow)
-		addEventHandler("onClientGUIClick", submitNP2, function ()
+		addEventHandler("onClientGUIClick", submitNP2, function()
 			if source == submitNP2 then
 				triggerServerEvent("sNewReg", localPlayer,  tonumber(svnum))
 				guiSetInputEnabled(false)

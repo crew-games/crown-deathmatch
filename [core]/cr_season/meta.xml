@@ -4,20 +4,26 @@
     <min_mta_version server="1.5.6-9.18728" client="1.5.6-9.18728"></min_mta_version>
     <oop>true</oop>
 
+    <script src="server/server.lua" type="server" />
+	
     <script src="client/main.lua" type="client" cache="false" />
     <script src="client/leaders.lua" type="client" cache="false" />
     <script src="client/scene.lua" type="client" cache="false" />
 	
-    <script src="server/server.lua" type="server" />
-    
     <file src="public/fonts/2.ttf" />
     <file src="public/fonts/3.ttf" />
     <file src="public/fonts/4.ttf" />
     <file src="public/fonts/5.ttf" />
     <file src="public/fonts/6.ttf" />
+    <file src="public/fonts/7.otf" />
     
     <file src="public/sounds/intro.mp3" />
+    <file src="public/sounds/leaders_music.mp3" />
     <file src="public/sounds/music.mp3" />
+    <file src="public/sounds/stage_ready.mp3" />
     <file src="public/sounds/swish.wav" />
     <file src="public/sounds/teleport.mp3" />
+    <file src="public/sounds/whoosh.wav" />
+	
+	<export function="isRenderScene" type="client" />
 </meta>

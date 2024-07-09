@@ -71,8 +71,8 @@ function elementStreamIn()
 end
 addEventHandler("onClientElementStreamIn", root, elementStreamIn)
 
-addEventHandler("onClientElementStreamOut", root, function () stopGB (source) end)
-addEventHandler("onClientElementDestroy", root, function () stopGB (source) end)
+addEventHandler("onClientElementStreamOut", root, function() stopGB (source) end)
+addEventHandler("onClientElementDestroy", root, function() stopGB (source) end)
 
 function dampenSound(theVehicle)
     if getVehicleType(theVehicle) ~= "Automobile" then
@@ -117,7 +117,7 @@ addEventHandler("toggleSound", root, toggleSound)
 
 -- Shmorf // 18-8-2013
 addEventHandler ("onClientResourceStart", resourceRoot,
-    function ()
+    function()
         for i,v in ipairs (getElementsByType ("object")) do
             if getElementModel (v) == 2226 then
                 if isElementStreamedIn(v) then
@@ -128,7 +128,7 @@ addEventHandler ("onClientResourceStart", resourceRoot,
     end)
 
 addEventHandler ("onClientPreRender", root,
-    function ()
+    function()
         for i,v in pairs (blasters) do
             if not v.sound or getElementDimension (localPlayer) ~= getElementDimension (v.sound) then return end
             

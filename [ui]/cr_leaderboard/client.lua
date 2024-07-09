@@ -40,21 +40,7 @@ bindKey("f4", "down", function()
 			triggerServerEvent("leaderboard.loadDatas", localPlayer, selectedCategory)
 	        showCursor(true)
 	        renderTimer = setTimer(function()
-	            exports.cr_ui:drawRoundedRectangle {
-					position = {
-						x = screenX,
-						y = screenY
-					},
-					size = {
-						x = sizeX,
-						y = sizeY
-					},
-
-					color = theme.GRAY[900],
-					alpha = 1,
-					radius = 10
-				}
-				
+				dxDrawRectangle(screenX, screenY, sizeX, sizeY, exports.cr_ui:rgba(theme.GRAY[900]))
 				dxDrawText("", screenX + 25, screenY + 20, 30, 30, tocolor(255, 255, 255, 250), 1, fonts.awesome1)
 	            dxDrawText("liderler sıralaması", screenX + 83, screenY + 16, sizeX, sizeY, tocolor(255, 255, 255, 250), 1, fonts.font1)
 	            dxDrawText("buradan sıralamada olanları görebilirsiniz", screenX + 83, screenY + 43, sizeX, sizeY, tocolor(255, 255, 255, 150), 1, fonts.font2)
@@ -141,7 +127,7 @@ bindKey("f4", "down", function()
 						end
 						
 						local currentTime = getTickCount()
-						local targetTime = os.time({ year = 2024, month = 6, day = 30, hour = 23, min = 59, sec = 59 })
+						local targetTime = os.time({ year = 2024, month = 7, day = 31, hour = 23, min = 59, sec = 59 })
 						local difference = targetTime - os.time()
 
 						local days = math.floor(difference / (24 * 60 * 60))
@@ -149,7 +135,7 @@ bindKey("f4", "down", function()
 						local minutes = math.floor((difference % (60 * 60)) / 60)
 						local seconds = difference % 60
 
-						local text = "Sezon 7'ye " .. days .. " gün, " .. hours .. " saat, " .. minutes .. " dakika, " .. seconds .. " saniye kaldı."
+						local text = "Sezon 8'e " .. days .. " gün, " .. hours .. " saat, " .. minutes .. " dakika, " .. seconds .. " saniye kaldı."
 						dxDrawText(text, screenX - 15, screenY + sizeY - 17, screenX + sizeX, sizeY, tocolor(150, 150, 150, 250), 1, fonts.font6, "center")
 					elseif selectedCategory == 2 then
 						local newY = 0

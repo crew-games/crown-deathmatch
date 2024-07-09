@@ -43,7 +43,7 @@ addCommandHandler("throwbeer", stopdrinkingCMD)
 -- Sync to new players
 addEvent("realism:drinking.request", true)
 addEventHandler("realism:drinking.request", root, 
-	function ()
+	function()
 		local players = exports.cr_pool:getPoolElementsByType("player")
 		for key, thePlayer in ipairs(players) do
 			local isdrinking = getElementData(thePlayer, "realism:drinking")

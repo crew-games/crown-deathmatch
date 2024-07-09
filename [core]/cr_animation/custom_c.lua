@@ -316,21 +316,7 @@ function animationPanel()
 				local rowIndex = 0
 				local index = 0
 				
-				exports.cr_ui:drawRoundedRectangle {
-					position = {
-						x = screenX,
-						y = screenY
-					},
-					size = {
-						x = sizeX,
-						y = sizeY
-					},
-
-					color = theme.GRAY[900],
-					alpha = 1,
-					radius = 10
-				}
-				
+				dxDrawRectangle(screenX, screenY, sizeX, sizeY, exports.cr_ui:rgba(theme.GRAY[900]))
 	            dxDrawText("animasyonlar", screenX + 20, screenY + 20, sizeX, sizeY, tocolor(255, 255, 255, 250), 1, fonts.font1)
 	            dxDrawText("hepimizin bakış açıları farklı olabilir", screenX + 20, screenY + 46, sizeX, sizeY, tocolor(255, 255, 255, 150), 1, fonts.font2)
 				

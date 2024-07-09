@@ -44,7 +44,7 @@ function showItemList()
 			addEventHandler("onClientGUIClick", bItemListClose, closeItemsList, false)
 			
 			--BUTTON SPAWN
-			addEventHandler("onClientGUIClick", bSpawn, function () 
+			addEventHandler("onClientGUIClick", bSpawn, function() 
 				if gridItems then 
 					local row, col = guiGridListGetSelectedItem(gridItems)
 					if (row==-1) or (col==-1) then
@@ -78,7 +78,7 @@ function showItemList()
 			end, false)
 			
 			--BUTTON SPAWN & CLOSE
-			addEventHandler("onClientGUIClick", bSpawnClose, function () 
+			addEventHandler("onClientGUIClick", bSpawnClose, function() 
 				if gridItems then 
 					local row, col = guiGridListGetSelectedItem(gridItems)
 					if (row==-1) or (col==-1) then
@@ -120,13 +120,13 @@ function showItemList()
 			end, false)
 			
 			--BUTTON SKIN IDS
-			addEventHandler("onClientGUIClick", bSkinID, function () 
+			addEventHandler("onClientGUIClick", bSkinID, function() 
 				outputChatBox("LOL! I didn't finish this =))")
 			
 			end, false)
 			
 			--BUTTON VISUALIZED MODE
-			addEventHandler("onClientGUIClick", bVisualMode, function () 
+			addEventHandler("onClientGUIClick", bVisualMode, function() 
 				guiSetEnabled(bSpawn, false)
 				guiSetEnabled(bSpawnClose, false)
 				guiEditSetReadOnly(bItemSearch, true)
@@ -161,12 +161,12 @@ function showItemList()
 			end, false)
 			
 			--ITEM SEARCH
-			addEventHandler("onClientGUIFocus", bItemSearch, function ()
+			addEventHandler("onClientGUIFocus", bItemSearch, function()
 				if gridItems then
 					guiSetText(bItemSearch , "")
 				end
 			end, false)
-			addEventHandler("onClientGUIChanged", bItemSearch, function () 
+			addEventHandler("onClientGUIChanged", bItemSearch, function() 
 				--outputChatBox("Searching .. ")
 				guiGridListClear (gridItems)
 				for key, value in pairs(g_items) do
@@ -180,18 +180,18 @@ function showItemList()
 			end, false)
 
 			--PLAYER SEARCH
-			addEventHandler("onClientGUIFocus", eTargetPlayer, function ()
+			addEventHandler("onClientGUIFocus", eTargetPlayer, function()
 				guiSetText(eTargetPlayer , "")
 			end, false)
 			addEventHandler("onClientGUIChanged", eTargetPlayer, checkNameExists)
 			
 			--ITEM VALUE
-			addEventHandler("onClientGUIFocus", eItemValue, function ()
+			addEventHandler("onClientGUIFocus", eItemValue, function()
 				guiSetText(eItemValue , "")
 			end, false)
 			
 			--ITEMLIST INTERACTIONS
-			addEventHandler("onClientGUIDoubleClick", gridItems, function () 
+			addEventHandler("onClientGUIDoubleClick", gridItems, function() 
 				--if button == "left" and state == "up" then
 					local row, col = guiGridListGetSelectedItem(gridItems)
 					if (row==-1) or (col==-1) then

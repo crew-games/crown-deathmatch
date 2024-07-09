@@ -242,6 +242,7 @@ function sendLocalDoAction(thePlayer, message, ignoreDeaths)
 	end
 
 	local state, affectedPlayers = sendLocalText(thePlayer, "* " .. message:gsub('"([^"]-)"', '#FFFFFF "%1#FFFFFF "#84cbad') .. " ((" .. name:gsub("_", " ") .. "))", 132, 203, 173, 30, {}, true, ignoreDeaths)
+	exports.cr_discord:sendMessage("do-log", "* " .. message:gsub('"([^"]-)"', '#FFFFFF "%1#FFFFFF "#84cbad') .. " ((" .. name:gsub("_", " ") .. "))")
 	return state, affectedPlayers
 end
 
@@ -267,16 +268,6 @@ local gpn = getPlayerName
 function getPlayerName(p)
 	local name = getElementData(p, "fakename") or gpn(p) or getElementData(p, "name") or getElementData(p, "rpp.npc.name")
 	return string.gsub(name, "_", " ")
-end
-
-function getPlayerMaskState(player)
-	local masks = exports["cr_items"]:getMasks()
-	for index, value in pairs(masks) do
-		if getElementData(player, value[1]) then
-			return true
-		end
-	end
-	return false
 end
 
 function maskeBul(thePlayer, commandName, maskID)

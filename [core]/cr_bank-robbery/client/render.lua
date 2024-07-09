@@ -21,14 +21,7 @@ function drawCounter()
 			local timer = getTimerDetails(counter) or 0
 			local text = math.floor(timer / 1000) .. " saniye"
 			
-			exports.cr_ui:drawRoundedRectangle {
-				position = counterPosition,
-				size = counterSizes,
-				color = theme.GRAY[900],
-				alpha = 1,
-				radius = 15
-			}
-
+			dxDrawRectangle(counterPosition.x, counterPosition.y, counterSizes.x, counterSizes.y, exports.cr_ui:rgba(theme.GRAY[900]))
 			dxDrawText(text, counterPosition.x, counterPosition.y + 17, counterPosition.x + counterSizes.x, counterSizes.y, tocolor(255, 255, 255, 255), 1, fonts.counter, "center")
 
 			if math.floor(timer / 1000) == 0 then

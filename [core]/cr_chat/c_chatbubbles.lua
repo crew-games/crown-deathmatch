@@ -72,12 +72,12 @@ function removeTexts(player, type)
     end
 end
 
--- Status
 addEventHandler("onClientElementDataChange", root, function(n)
     if n == "chat:status" and getElementType(source) == "player" then
         updateStatus(source, "status")
     end
 end)
+
 addEventHandler("onClientResourceStart", resourceRoot, function()
     for _, player in ipairs(getElementsByType("player")) do
         if getElementData(player, "chat:status") then

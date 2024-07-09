@@ -46,7 +46,13 @@ end
 
 addEvent("pass.getReward", true)
 addEventHandler("pass.getReward", root, function(rewardType, rewardID)
-    if client ~= source then return end
+    if client ~= source then
+		return
+	end
+	
+	if developerMode then
+		return
+	end
 
     local characterID = getElementData(client, "dbid")
     local result = dbPoll(dbQuery(mysql:getConnection(), "SELECT 1 FROM pass_rewards WHERE character_id = ? AND reward_type = ? AND reward_id = ?", characterID, rewardType, rewardID), -1)

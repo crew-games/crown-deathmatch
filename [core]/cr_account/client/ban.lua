@@ -8,8 +8,8 @@ local x, y = screenSize.x / 2 - CONTAINER_SIZES.x / 2, screenSize.y / 2 - CONTAI
 local banDetails = {}
 
 function renderBanScreen()
-	dxDrawRectangle(0, 0, screenSize.x, screenSize.y, tocolor(18, 18, 20, 150))
-	dxDrawImage(screenSize.x / 2 - 75, screenSize.y / 2 - 300, 150, 150, ":cr_ui/public/images/logos/solid.png", 0, 0, 0, exports.cr_ui:rgba(theme.RED[700]))
+	dxDrawRectangle(0, 0, screenSize.x, screenSize.y, exports.cr_ui:rgba(theme.GRAY[900], 100))
+	dxDrawImage((screenSize.x - 150) / 2, screenSize.y / 2 - 300, 150, 150, ":cr_ui/public/images/logo.png", 0, 0, 0, exports.cr_ui:getServerColor(1))
 
     exports.cr_ui:drawTypography({
         position = {
@@ -17,14 +17,14 @@ function renderBanScreen()
             y = y + 200,
         },
 
-        text = 'Sunucudan yasaklandınız.',
-        alignX = 'left',
-        alignY = 'top',
+        text = "Sunucudan yasaklandınız.",
+        alignX = "left",
+        alignY = "top",
         color = theme.WHITE,
-        scale = 'h1',
+        scale = "h1",
         wrap = false,
 
-        fontWeight = 'bold',
+        fontWeight = "bold",
     })
 
     exports.cr_ui:drawList({
@@ -40,17 +40,17 @@ function renderBanScreen()
         padding = 20,
         rowHeight = 35,
 
-        name = 'list',
-        header = 'Yasak Detayları',
+        name = "list",
+        header = "Yasak Detayları",
         items = {
-            { icon = '', text = 'Yasaklayan: ' .. banDetails[1], key = '' },
-            { icon = '', text = 'Yasaklanma Sebebi: ' .. banDetails[2], key = '' },
-            { icon = '', text = 'Yasaklanma Tarihi: ' .. banDetails[3], key = '' },
-            { icon = '', text = 'Bitiş Süresi: ' .. ((banDetails[4] == -1) and 'Sınırsız' or secondsToTimeDesc(banDetails[4] / 1000)), key = '' },
+            { icon = "", text = "Yasaklayan: " .. banDetails[1], key = "" },
+            { icon = "", text = "Yasaklanma Sebebi: " .. banDetails[2], key = "" },
+            { icon = "", text = "Yasaklanma Tarihi: " .. banDetails[3], key = "" },
+            { icon = "", text = "Bitiş Süresi: " .. ((banDetails[4] == -1) and "Sınırsız" or exports.cr_datetime:secondsToTimeDesc(banDetails[4] / 1000)), key = "" },
         },
 
-        variant = 'soft',
-        color = 'gray',
+        variant = "soft",
+        color = "gray",
     })
 
     exports.cr_ui:drawTypography({
@@ -59,14 +59,14 @@ function renderBanScreen()
             y = y + 250,
         },
 
-        text = 'Kuralları ihlal ettiğiniz için sunucudan yasaklandınız. Aşağıdan detayları\ngörüntüleyebilirsiniz.',
-        alignX = 'left',
-        alignY = 'top',
+        text = "Kuralları ihlal ettiğiniz için sunucudan yasaklandınız. Aşağıdan detayları\ngörüntüleyebilirsiniz.",
+        alignX = "left",
+        alignY = "top",
         color = theme.GRAY[300],
-        scale = 'body',
+        scale = "body",
         wrap = false,
 
-        fontWeight = 'regular',
+        fontWeight = "regular",
     })
 end
 
@@ -77,19 +77,16 @@ addEventHandler("account.banScreen", root, function(_banDetails)
 		
 		setPlayerHudComponentVisible("all", false)
 		setPlayerHudComponentVisible("crosshair", true)
+		setCameraInterior(0)
 		setCameraMatrix(-350.67303466797, 2229.3159179688, 46.286087036133, -257.8219909668, 2193.5864257812, 36.182357788086)
 		fadeCamera(true)
 		showCursor(true)
 		showChat(false)
 		music.timer = setTimer(playMusic, 0, 0)
 		
-		if isEventHandlerAdded("onClientRender", root, renderAccount) then
-			removeEventHandler("onClientRender", root, renderAccount)
-		end
-		
-		if isEventHandlerAdded("onClientRender", root, renderSplash) then
-			removeEventHandler("onClientRender", root, renderSplash)
-		end
+		loading = false
+		removeEventHandler("onClientRender", root, renderLoading)
+		passedIntro = true
 		
 		addEventHandler("onClientRender", root, renderBanScreen)
 		addEventHandler("onClientRender", root, renderSplash)

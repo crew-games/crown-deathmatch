@@ -101,13 +101,13 @@
     <file src="books/Chemistry101.xml" />
     <file src="books/LSESProcedureManual.xml" />
     
-    <file src="images/category/weapons.png" />
-    <file src="images/category/keys.png" />
-    <file src="images/category/backpack.png" />
-    <file src="images/category/wallet.png" />
     <file src="images/category/delete.png" />
-    <file src="images/category/show.png" />
     <file src="images/category/drop.png" />
+    <file src="images/category/items.png" />
+    <file src="images/category/keys.png" />
+    <file src="images/category/show.png" />
+    <file src="images/category/wallet.png" />
+    <file src="images/category/weapons.png" />
     
     <file src="images/yok.png" />
     

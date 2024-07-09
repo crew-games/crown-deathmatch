@@ -29,7 +29,7 @@ function build_Dialog()
 		end, false)
 	
 	gui["pushButton_2"] = guiCreateButton(250, 185, 75, 23, "Close", false, gui["_root"])
-	addEventHandler("onClientGUIClick", gui["pushButton_2"], function ()
+	addEventHandler("onClientGUIClick", gui["pushButton_2"], function()
 			destroyElement(gui["_root"])
 			showCursor(false)
 			guiSetInputMode("allow_binds")

@@ -160,14 +160,20 @@ function createRandomMaleName()
 	local random1 = math.random(1, #firstName)
 	local random2 = math.random(1, #lastName)
 	local name = firstName[random1] .. " " .. randomLetter() .. ". " .. lastName[random2]
-	local ciftisim = math.random(1,2)
-	--if ciftisim == 1 then
-	--	return exports["cr_ped"]:getRandomName("first", "male") .. " " .. exports["cr_ped"]:getRandomName("first", "male") .. " " .. exports["cr_ped"]:getRandomName("last", "male")--name
-	--else
-		return exports["cr_ped"]:getRandomName("full", "male")--name
-	--end
+	local ciftisim = math.random(1, 2)
+	return exports["cr_ped"]:getRandomName("full", "male")
 end
 
 function randomLetter()
 	return string.upper(string.char(math.random(97, 122)));
+end
+
+function getPlayerMaskState(player)
+	local masks = exports.cr_items:getMasks()
+	for index, value in pairs(masks) do
+		if getElementData(player, value[1]) then
+			return true
+		end
+	end
+	return false
 end

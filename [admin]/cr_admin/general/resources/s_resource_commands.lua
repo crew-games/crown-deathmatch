@@ -34,13 +34,11 @@ local commandList = {
 
 addEventHandler("onPlayerCommand", root, function(commandName)
     if (commandList[commandName]) and (not enabledUsers[getElementData(source, "account:username")]) then
-		cancelEvent()
+		--cancelEvent()
     end
-end)
-
-addEventHandler("onPlayerCommand", root, function()
-    if (getElementData(source, "loggedin") ~= 1) then
-        cancelEvent()
+	
+	if (getElementData(source, "loggedin") ~= 1) then
+        --cancelEvent()
     end
 end)
 

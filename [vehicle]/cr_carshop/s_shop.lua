@@ -270,8 +270,6 @@ function carshop_buyVehicle(paymentMethod)
 	else
 		if isOverlayDisabled then 
 			outputChatBox("No.", client, 0, 255, 0)
-		else
-			--exports.cr_hud:sendBottomNotification(client, "No!", "Just no...")
 		end
 		return false
 	end

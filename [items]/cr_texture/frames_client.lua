@@ -304,7 +304,7 @@ function frames_removeClientInteriorTextures (dimension)
 end
 
 addEventHandler ("onClientRender", root,
-	function ()
+	function()
 		local dim = getElementDimension (localPlayer)
 		
 		for i, _ in pairs (worldShaders) do

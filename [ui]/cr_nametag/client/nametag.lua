@@ -45,7 +45,7 @@ function renderNametags()
 					boneZ = boneZ + 0.14
 				else
 					boneX, boneY, boneZ = getElementPosition(player)
-					boneZ = boneZ + 0.9
+					boneZ = boneZ + 0.94
 				end
 				
 				local distance = math.sqrt((cameraX - boneX) ^ 2 + (cameraY - boneY) ^ 2 + (cameraZ - boneZ) ^ 2)
@@ -98,7 +98,7 @@ function renderNametags()
 									end
 								end
 								
-								dxDrawImage(screenX + xpos - iconW - offset / 2 + 31, screenY + ypos + fixY - 23 - sectionY, iconW - 2, iconH - 2, "public/images/icons/" .. value .. ".png", 0, 0, 0, tocolor(255, 255, 255, alpha), postGUI)
+								dxDrawImage(screenX + xpos - iconW - offset / 2 + 31, screenY + ypos + fixY - 23 - sectionY, iconW - 2, iconH - 2, "public/images/" .. value .. ".png", 0, 0, 0, tocolor(255, 255, 255, alpha), postGUI)
 								
 								iconsThisLine = iconsThisLine + 1
 								if iconsThisLine == expectedIcons then
@@ -219,8 +219,8 @@ function renderNametags()
 						local leftSectionX = 0
 						
 						if settings.country == 2 then
-							dxDrawImage(screenX - textW - 39, screenY - sectionY - 31, 28, 13, "public/images/icons/country/" .. cache["country"] .. ".png", 0, 0, 0, tocolor(255, 255, 255, alpha), postGUI)
-							leftSectionX = leftSectionX + 38
+							dxDrawImage(screenX - textW - 39, screenY - sectionY - 31, 28, 13, "public/images/country/" .. cache["country"] .. ".png", 0, 0, 0, tocolor(255, 255, 255, alpha), postGUI)
+							leftSectionX = leftSectionX + 40
 						end
 						
 						if settings.rank == 2 then
@@ -231,15 +231,15 @@ function renderNametags()
 						end
 						
 						if cache["donater"] > 0 then
-							dxDrawImage(screenX - textW - 32 - leftSectionX, screenY - sectionY - 36, 23, 23, "public/images/icons/donater" .. cache["donater"] .. ".png", 0, 0, 0, tocolor(255, 255, 255, alpha), postGUI)
+							dxDrawImage(screenX - textW - 31 - leftSectionX, screenY - sectionY - 37, 23, 23, "public/images/donater/" .. cache["donater"] .. ".png", 0, 0, 0, tocolor(255, 255, 255, alpha), postGUI)
 						end
 						
 						if cache["writing"] then
-							dxDrawImage(screenX + textW + 10, screenY - sectionY - 36, 24, 24, "public/images/icons/writing.png", 0, 0, 0, tocolor(255, 255, 255, alpha), postGUI)
+							dxDrawImage(screenX + textW + 10, screenY - sectionY - 36, 24, 24, "public/images/writing.png", 0, 0, 0, tocolor(255, 255, 255, alpha), postGUI)
 						end
 						
 						if cache["talking"] then
-							dxDrawImage(screenX + textW + 10, screenY - sectionY - 36, 24, 24, "public/images/icons/microphone.png", 0, 0, 0, tocolor(255, 255, 255, alpha), postGUI)
+							dxDrawImage(screenX + textW + 10, screenY - sectionY - 36, 24, 24, "public/images/microphone.png", 0, 0, 0, tocolor(255, 255, 255, alpha), postGUI)
 						end
 					end
 				end
@@ -256,7 +256,11 @@ function createCache(player)
         return
     end
     
-	if (player:getData("loggedin") ~= 1) or (localPlayer:getData("loggedin") ~= 1) then
+	if (localPlayer:getData("loggedin") ~= 1) then
+        return
+    end
+	
+	if (player:getData("loggedin") ~= 1) then
         return
     end
 
@@ -277,34 +281,18 @@ function createCache(player)
         end
     end
 
-    local vehicle = player:getOccupiedVehicle(player)
+    local vehicle = getPedOccupiedVehicle(player)
 	local windowsDown = vehicle and (vehicle:getData("vehicle:windowstat") == 1)
 
-	if vehicle and not windowsDown and vehicle ~= player:getOccupiedVehicle(localPlayer) and vehicle:getData("tinted") then
+	if vehicle and not windowsDown and vehicle ~= getPedOccupiedVehicle(localPlayer) and vehicle:getData("tinted") then
 		name = "Gizli (Cam Filmi) [>" .. (player:getData("dbid")) .. "]"
 		tinted = true
 	end
 
     if not tinted then
-        if getPlayerMaskState(player) then 
+        if exports.cr_global:getPlayerMaskState(player) then 
             name = "Gizli [>" .. (player:getData("dbid")) .. "]"
 			mask = true
-        end
-
-        if player:getData("restrain") == 1 then
-            table.insert(icons, "handcuffs")
-        end
-
-        if player:getData("smoking") then
-            table.insert(icons, "cigarette")
-        end
-
-        if player:getData("fullfacehelmet") then
-            table.insert(icons, "helmet")
-        end
-
-        if player:getData("gasmask") then
-            table.insert(icons, "gasmask")
         end
 
         if player:getData("seatbelt") and vehicle then
@@ -317,7 +305,7 @@ function createCache(player)
     end
 
     if player:getData("vip") > 0 then
-        table.insert(icons, "vip" .. player:getData("vip"))
+        table.insert(icons, "vip/" .. player:getData("vip"))
     end
 
     if settings.country == 1 then
@@ -351,8 +339,8 @@ function createCache(player)
     if player:getData("pass_type") == 2 then
         table.insert(icons, "elite_pass")
     end
-
-    if settings.rank == 1 then
+	
+	if settings.rank == 1 then
         if player:getData("rank") > 0 then
             table.insert(icons, "rank/" .. (player:getData("rank") or 1))
         end
@@ -399,14 +387,14 @@ end, 250, 0)
 addEventHandler("onClientElementDataChange", localPlayer, function(theKey, newValue, oldValue)
 	if theKey == "nametag_settings" then
 		settings = {
-			font = getElementData(localPlayer, "nametag_settings").font or 1,
-			type = getElementData(localPlayer, "nametag_settings").type or 1,
-			id = getElementData(localPlayer, "nametag_settings").id or 1,
-			border = getElementData(localPlayer, "nametag_settings").border or 1,
-			country = getElementData(localPlayer, "nametag_settings").country or 1,
-			icon = getElementData(localPlayer, "nametag_settings").icon or 1,
-			placement = getElementData(localPlayer, "nametag_settings").placement or 1,
-			rank = getElementData(localPlayer, "nametag_settings").rank or 1
+			font = (getElementData(localPlayer, "nametag_settings").font or 1),
+			type = (getElementData(localPlayer, "nametag_settings").type or 1),
+			id = (getElementData(localPlayer, "nametag_settings").id or 1),
+			border = (getElementData(localPlayer, "nametag_settings").border or 1),
+			country = (getElementData(localPlayer, "nametag_settings").country or 1),
+			icon = (getElementData(localPlayer, "nametag_settings").icon or 1),
+			placement = (getElementData(localPlayer, "nametag_settings").placement or 1),
+			rank = (getElementData(localPlayer, "nametag_settings").rank or 1)
 		}
 		
 		updateFont()
@@ -414,7 +402,7 @@ addEventHandler("onClientElementDataChange", localPlayer, function(theKey, newVa
 end)
 
 loadTimer = setTimer(function()
-	if getElementData(localPlayer, "loggedin") == 1 then
+	if (getElementData(localPlayer, "loggedin") == 1) then
 		for _, value in pairs(exports.cr_items:getBadges()) do
 			badges[value[1]] = { value[4][1], value[4][2], value[4][3], value[5], value[3] }
 		end
@@ -423,6 +411,18 @@ loadTimer = setTimer(function()
 			masks[value[1]] = { value[1], value[2], value[3], value[4] }
 		end
 		
+		settings = {
+			font = (getElementData(localPlayer, "nametag_settings").font or 1),
+			type = (getElementData(localPlayer, "nametag_settings").type or 1),
+			id = (getElementData(localPlayer, "nametag_settings").id or 1),
+			border = (getElementData(localPlayer, "nametag_settings").border or 1),
+			country = (getElementData(localPlayer, "nametag_settings").country or 1),
+			icon = (getElementData(localPlayer, "nametag_settings").icon or 1),
+			placement = (getElementData(localPlayer, "nametag_settings").placement or 1),
+			rank = (getElementData(localPlayer, "nametag_settings").rank or 1)
+		}
+		
+		updateFont()
 		killTimer(loadTimer)
 	end
 end, 1000, 0)
@@ -452,19 +452,6 @@ addEventHandler("onClientElementDestroy", root, function()
 end)
 
 addEventHandler("onClientResourceStart", resourceRoot, function()
-    settings = {
-		font = getElementData(localPlayer, "nametag_settings").font or 1,
-		type = getElementData(localPlayer, "nametag_settings").type or 1,
-		id = getElementData(localPlayer, "nametag_settings").id or 1,
-		border = getElementData(localPlayer, "nametag_settings").border or 1,
-		country = getElementData(localPlayer, "nametag_settings").country or 1,
-		icon = getElementData(localPlayer, "nametag_settings").icon or 1,
-		placement = getElementData(localPlayer, "nametag_settings").placement or 1,
-		rank = getElementData(localPlayer, "nametag_settings").rank or 1
-	}
-	
-	updateFont()
-	
 	for _, player in ipairs(getElementsByType("player")) do
         setPlayerNametagShowing(player, false)
 		if isElementStreamedIn(player) then
@@ -497,22 +484,12 @@ end)
 
 --===========================================================================================================================================================
 
-
 function aimsSniper()
 	return getPedControlState(localPlayer, "aim_weapon") and (getPedWeapon(localPlayer) == 22 or getPedWeapon(localPlayer) == 23 or getPedWeapon(localPlayer) == 24 or getPedWeapon(localPlayer) == 25 or getPedWeapon(localPlayer) == 26 or getPedWeapon(localPlayer) == 27 or getPedWeapon(localPlayer) == 28 or getPedWeapon(localPlayer) == 29 or getPedWeapon(localPlayer) == 30 or getPedWeapon(localPlayer) == 31 or getPedWeapon(localPlayer) == 32 or getPedWeapon(localPlayer) == 33 or getPedWeapon(localPlayer) == 34)
 end
 
 function aimsAt(player)
 	return getPedTarget(localPlayer) == player and aimsSniper()
-end
-
-function getPlayerMaskState(player)
-	for index, value in pairs(masks) do
-		if player:getData(value[1]) then
-			return true
-		end
-	end
-	return false
 end
 
 function getHealthColor(player)

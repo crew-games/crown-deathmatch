@@ -7,13 +7,11 @@ local fadeDuration = 1000
 local font = dxCreateFont(":cr_ui/public/fonts/EsBuild.ttf", 100)
 local fadeStartTime = nil
 
-local color1 = {249, 190, 78}
-local color2 = {255, 212, 59}
-local currentColor = {color1[1], color1[2], color1[3]}
+local color1 = { 249, 190, 78 }
+local color2 = exports.cr_ui:getServerColor(4)
+local currentColor = { color1[1], color1[2], color1[3] }
 local colorProgress = 0
 local colorDirection = 1
-
-local isRendered = false
 
 function updateColor()
     colorProgress = colorProgress + 0.01 * colorDirection
@@ -87,7 +85,6 @@ function drawShineAntiCheat()
 
         if fadeProgress == 1 then
 			music.timer = setTimer(playMusic, 0, 0)
-			triggerServerEvent("account.requestPlayerInfo", localPlayer)
             removeEventHandler("onClientRender", root, drawShineAntiCheat)
 			passedIntro = true
         end
@@ -103,6 +100,8 @@ end
 
 function renderIntro()
 	if not passedIntro then
-		addEventHandler("onClientRender", root, drawShineAntiCheat)
+		if not isEventHandlerAdded("onClientRender", root, drawShineAntiCheat) then
+			addEventHandler("onClientRender", root, drawShineAntiCheat)
+		end
 	end
 end

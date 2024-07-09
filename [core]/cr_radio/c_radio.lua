@@ -215,13 +215,13 @@ function updateLoudness(theVehicle)
 end
 
 addEventHandler("onClientElementStreamIn", root,
-    function ()
+    function()
 		spawnSound(source)
     end
 )
 
 addEventHandler("onClientElementStreamOut", root,
-    function ()
+    function()
         if getElementType(source) == "vehicle" then
 			if (soundElementsOutside[source]) then
 				stopSound(soundElementsOutside[source])

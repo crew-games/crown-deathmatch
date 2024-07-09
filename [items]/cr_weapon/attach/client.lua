@@ -308,7 +308,7 @@ function createEditWindow()
 	end
 
 	addEventHandler("onClientGUIComboBoxAccepted", bonesComboBox,
-		function ()
+		function()
 			if isElement(editingObject) then
 				destroyElement(editingObject)
 			end
@@ -331,7 +331,7 @@ function createEditWindow()
 		posEditBox[i] = guiCreateEdit(65, j, 150, 20, originalPos[i + 2], false, eWin)
 
 		addEventHandler("onClientGUIChanged", posEditBox[i],
-			function ()
+			function()
 				local bone = guiComboBoxGetSelected(bonesComboBox) + 1
 				local x, y, z, rx, ry, rz = getEditPositions()
 

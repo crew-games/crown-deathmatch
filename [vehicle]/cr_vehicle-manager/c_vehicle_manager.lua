@@ -608,7 +608,7 @@ function createCheckVehWindow(result, adminTitle, history, notes1)
         function(button)
             if button == "left" then
                 if triggerServerEvent("vehicleManager:restoreVeh", localPlayer, localPlayer, result[1][1]) then
-                    -- setTimer(function ()
+                    -- setTimer(function()
                     triggerServerEvent("vehicleManager:checkveh", localPlayer, localPlayer, "checkveh", result[1][1])
                     -- end, 50, 1)
                 end

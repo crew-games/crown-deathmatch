@@ -136,7 +136,7 @@ addEventHandler("killmessage2.sendKill", root, function(killerName, killerNameCo
 end)
 
 setTimer(function()
-	if (getElementData(localPlayer, "loggedin") == 1) and (getElementData(localPlayer, "hud_settings").killmessage == 2) and (not exports.cr_items:isInventoryShow()) and (not exports.cr_hud:isOverlayShow()) then
+	if (getElementData(localPlayer, "loggedin") == 1) and (getElementData(localPlayer, "hud_settings").killmessage == 2) and (not exports.cr_items:isInventoryShow()) and (not exports.cr_hud:isOverlayRender()) then
         for r = 1, rows do
             if killRow[r] then
                 exports.cr_ui:dxDrawFramedText(killRow[r]["killerName"], killRow[r]["killerNamePos"]["leftX"], killRow[r]["killerNamePos"]["topY"], killRow[r]["killerNamePos"]["rightX"], killRow[r]["killerNamePos"]["bottomY"], killRow[r]["killerNameColor"], 1, label_font, "right")

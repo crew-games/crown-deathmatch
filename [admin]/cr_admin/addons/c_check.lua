@@ -61,7 +61,7 @@ function CreateCheckWindow()
 end
 
 addEventHandler("onClientResourceStart", resourceRoot,
-	function ()
+	function()
 		CreateCheckWindow()
 	end
 )

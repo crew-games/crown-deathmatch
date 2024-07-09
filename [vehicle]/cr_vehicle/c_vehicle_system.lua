@@ -35,13 +35,13 @@ function build_SaleGUI()
 	guiLabelSetVerticalAlign(gui["label_4"], "center")
 	
 	gui["pushButton"] = guiCreateButton(180, 195, 91, 31, "Sell", false, gui["_root"])	
-	addEventHandler("onClientGUIClick", gui["pushButton"], function ()
+	addEventHandler("onClientGUIClick", gui["pushButton"], function()
 			triggerServerEvent("sellVehicle", resourceRoot, localPlayer, "sell", guiGetText(gui["lineEdit"]))
 		end, false)
 
 	
 	gui["pushButton_2"] = guiCreateButton(290, 195, 91, 31, "Close", false, gui["_root"])
-	addEventHandler("onClientGUIClick", gui["pushButton_2"], function ()
+	addEventHandler("onClientGUIClick", gui["pushButton_2"], function()
 			destroyElement(gui["_root"])
 			showCursor(false)
 			guiSetInputMode("allow_binds")

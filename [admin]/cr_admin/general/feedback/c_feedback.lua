@@ -48,17 +48,17 @@ function openFeedBackForm(target)
 	addEventHandler("onClientKey", root, keyPress)
 	addEventHandler("onClientGUIFocus", gui.edit[1], onClientGUIFocus_editbox, true)
 	addEventHandler("onClientGUIBlur", gui.edit[1], onClientGUIBlur_editbox, true)
-	addEventHandler("onClientGUIClick", gui.button[1], function () 
+	addEventHandler("onClientGUIClick", gui.button[1], function() 
 		if source == gui.button[1] then
 			closeFeedbackForm()
 		end
 	end, true)
-	addEventHandler("onClientGUIClick", gui.button[2], function ()
+	addEventHandler("onClientGUIClick", gui.button[2], function()
 		if source == gui.button[2] then
 			submitFeedback()
 		end
 	end, true)
-	addEventHandler("onClientGUIClick", gui.button[2], function ()
+	addEventHandler("onClientGUIClick", gui.button[2], function()
 		if source == gui.button[2] then
 			submitFeedback()
 		end
@@ -185,7 +185,7 @@ function openFeedBackDetails(data)
 			guiSetText(gui.window[2], "Feedbacks received for " .. name .. " | Overall rating: " .. formatRating(sum/#feedbacks))
 
 			gui.button[99] = guiCreateButton(14, 301, 668, 24, "Close", false, gui.window[2])
-			addEventHandler("onClientGUIClick", gui.button[99] , function ()
+			addEventHandler("onClientGUIClick", gui.button[99] , function()
 				if source == gui.button[99] then 
 					closeFeedbackDetails()
 				end
@@ -218,7 +218,7 @@ function openFeedbackEntry(text)
 		gui.memo[1] = guiCreateMemo(14, 30, 667, 261, text ,false, gui.window[3])
 		guiMemoSetReadOnly(gui.memo[1], true)
 		gui.button[100] = guiCreateButton(14, 301, 668, 24, "Close", false, gui.window[3])
-		addEventHandler("onClientGUIClick", gui.button[100] , function ()
+		addEventHandler("onClientGUIClick", gui.button[100] , function()
 			if source == gui.button[100] then 
 				closeFeedbackEntry()
 			end

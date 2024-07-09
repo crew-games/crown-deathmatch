@@ -355,7 +355,7 @@ addEventHandler ("onClientCustomAnimationRestore", root,
 )
 --[[
 setTimer (
-    function ()
+    function()
         if isLocalPlayerAnimating then 
             if not getPedAnimation (localPlayer) then
                 isLocalPlayerAnimating = false

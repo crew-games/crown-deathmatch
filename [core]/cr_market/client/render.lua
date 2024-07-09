@@ -52,39 +52,7 @@ function marketRender()
 			addEventHandler("onClientPaste", root, pasteClipboardText)
 	        showCursor(true)
 			
-			previewVehicle = createVehicle(privateVehicles[selectedVehicle][2], 0, 0, 0)
-			setVehicleColor(previewVehicle, 255, 255, 255, 255, 255, 255)
-			setElementCollisionsEnabled(previewVehicle, false)
-			setElementDimension(previewVehicle, localPlayer.dimension)
-			setElementInterior(previewVehicle, localPlayer.interior)
-			
 			renderTimer = setTimer(function()
-				exports.cr_3dview:processObjectPreview(
-                    privateWeapons[selectedWeapon][2],
-                    screenX + 150,
-					screenY - 140,
-					900,
-					900
-				)
-				exports.cr_3dview:setObjectPositionOffsets(0.1, 0, 0)
-				
-				if not exports.cr_3dview:getVehicleElement() then
-					if isElement(previewVehicle) then
-						exports.cr_3dview:processVehiclePreview()
-						destroyElement(previewVehicle)
-					end
-					
-					exports.cr_3dview:processVehiclePreview(previewVehicle,
-						screenX,
-						screenY,
-						100,
-						100
-					)
-					
-					exports.cr_3dview:setVehicleFov(80)
-					exports.cr_3dview:setVehiclePositionOffsets(0.5, 0, 0)
-				end
-			
 	            dxDrawRectangle(screenX, screenY, sizeX, sizeY, tocolor(25, 25, 25, 255))
 
 				dxDrawText("", screenX + sizeX - 20 + 1, screenY - 35 + 1, 2, 2, tocolor(0, 0, 0, 255), 1, fonts.awesome2)
@@ -92,7 +60,6 @@ function marketRender()
 				if exports.cr_ui:inArea(screenX + sizeX - 20, screenY - 35, dxGetTextWidth("", 1, fonts.awesome2), dxGetFontHeight(1, fonts.awesome2)) and getKeyState("mouse1") and clickTick + 500 < getTickCount() then
 					clickTick = getTickCount()
 					restartVariables()
-					exports.cr_3dview:removeProcesses()
 					removeEventHandler("onClientCharacter", root, eventWrite)
 					removeEventHandler("onClientKey", root, removeCharacter)
 					removeEventHandler("onClientPaste", root, pasteClipboardText)
@@ -130,14 +97,11 @@ function marketRender()
 								selectedCategory = index
 								
 								if selectedCategory == 3 then
-									exports.cr_3dview:setVehicleAlpha(255)
-									exports.cr_3dview:setObjectAlpha(0)
+									-- continue
 								elseif selectedCategory == 4 then
-									exports.cr_3dview:setObjectAlpha(255)
-									exports.cr_3dview:setVehicleAlpha(0)
+									-- continue
 								else
-									exports.cr_3dview:setVehicleAlpha(0)
-									exports.cr_3dview:setObjectAlpha(0)
+									-- continue
 								end
 							end
 						end
@@ -604,21 +568,12 @@ function marketRender()
 					elseif selectedCategory == 3 then
 						drawLinesBackground({ x = screenX + 220, y = screenY + 45 }, { x = 680, y = 555 })
 						
-						exports.cr_3dview:setVehicleProjection(
-							screenX + 150,
-							screenY - 140,
-							900,
-							900
-						)
-						
 						dxDrawText("", screenX + 240, screenY + 260, nil, nil, exports.cr_ui:inArea(screenX + 240, screenY + 260, dxGetTextWidth("", 1, fonts.awesome3), dxGetFontHeight(1, fonts.awesome3)) and tocolor(255, 255, 255, 255) or tocolor(255, 255, 255, 200), 1, fonts.awesome3)
 						
 						if exports.cr_ui:inArea(screenX + 240, screenY + 260, dxGetTextWidth("", 1, fonts.awesome3), dxGetFontHeight(1, fonts.awesome3)) and getKeyState("mouse1") and clickTick + 500 < getTickCount() then
 							clickTick = getTickCount()
 							if selectedVehicle ~= 1 then
 								selectedVehicle = selectedVehicle - 1
-								previewVehicle:setModel(privateVehicles[selectedVehicle][2])
-								exports.cr_3dview:setPreviewVehicleModel(privateVehicles[selectedVehicle][2])
 							end
 						end
 						
@@ -628,8 +583,6 @@ function marketRender()
 							clickTick = getTickCount()
 							if selectedVehicle < #privateVehicles then
 								selectedVehicle = selectedVehicle + 1
-								previewVehicle:setModel(privateVehicles[selectedVehicle][2])
-								exports.cr_3dview:setPreviewVehicleModel(privateVehicles[selectedVehicle][2])
 							end
 						end
 						
@@ -646,20 +599,12 @@ function marketRender()
 					elseif selectedCategory == 4 then
 						drawLinesBackground({ x = screenX + 220, y = screenY + 45 }, { x = 680, y = 555 })
 						
-						exports.cr_3dview:setObjectProjection(
-							screenX + 150,
-							screenY - 140,
-							900,
-							900
-						)
-						
 						dxDrawText("", screenX + 240, screenY + 260, nil, nil, exports.cr_ui:inArea(screenX + 240, screenY + 260, dxGetTextWidth("", 1, fonts.awesome3), dxGetFontHeight(1, fonts.awesome3)) and tocolor(255, 255, 255, 255) or tocolor(255, 255, 255, 200), 1, fonts.awesome3)
 						
 						if exports.cr_ui:inArea(screenX + 240, screenY + 260, dxGetTextWidth("", 1, fonts.awesome3), dxGetFontHeight(1, fonts.awesome3)) and getKeyState("mouse1") and clickTick + 500 < getTickCount() then
 							clickTick = getTickCount()
 							if selectedWeapon ~= 1 then
 								selectedWeapon = selectedWeapon - 1
-								exports.cr_3dview:processObjectPreview()
 							end
 						end
 						
@@ -669,7 +614,6 @@ function marketRender()
 							clickTick = getTickCount()
 							if selectedWeapon < #privateWeapons then
 								selectedWeapon = selectedWeapon + 1
-								exports.cr_3dview:processObjectPreview()
 							end
 						end
 						
@@ -688,7 +632,6 @@ function marketRender()
 	        end, 0, 0)
 	    else
 			restartVariables()
-			exports.cr_3dview:removeProcesses()
 			removeEventHandler("onClientCharacter", root, eventWrite)
 			removeEventHandler("onClientKey", root, removeCharacter)
 			removeEventHandler("onClientPaste", root, pasteClipboardText)

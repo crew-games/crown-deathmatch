@@ -4,7 +4,7 @@ local gameTypes = {
     "█ En Yüksek FPS!",
 	"█ FPS & LAG Sıkıntısı Yok!",
 	"█ Crown Deathmatch v" .. getScriptVersion(),
-	"█ Sezon 6",
+	"█ Sezon 7",
 }
 
 setTimer(function()

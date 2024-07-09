@@ -181,7 +181,7 @@ function createIntManagerWindow(IntsList)
 					local lText = guiCreateLabel(10,22,341,16,"Interior araması için gerekli bilgileri girin (ID, İsim, Sahibi, Fiyat, ...):",false,wInteriorSearch)
 					guiSetFont(lText,"default-small")
 					local eSearch = guiCreateEdit(10,38,331,31,"Ara",false,wInteriorSearch)
-					addEventHandler("onClientGUIFocus", eSearch, function ()
+					addEventHandler("onClientGUIFocus", eSearch, function()
 						guiSetText(eSearch , "")
 					end, false)
 					local bCancel = guiCreateButton(10,73,169,22,"İptal",false,wInteriorSearch)
@@ -643,7 +643,7 @@ function createCheckIntWindow(result, adminTitle, history, notes1)
 			function(button)
 				if button == "left" then
 					if triggerServerEvent("interiorManager:restoreInt", localPlayer, localPlayer, result[1][1]) then
-						--setTimer(function ()
+						--setTimer(function()
 							triggerServerEvent("interiorManager:checkint", localPlayer, localPlayer, "checkint", result[1][1])
 						--end, 50, 1)
 					end

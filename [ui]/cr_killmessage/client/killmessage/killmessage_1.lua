@@ -26,7 +26,7 @@ addEventHandler("killmessage1.sendKill", root, function(killerName, killedName, 
 end)
 
 addEventHandler("onClientRender", root, function()
-    if (getElementData(localPlayer, "loggedin") == 1) and (getElementData(localPlayer, "hud_settings").killmessage == 1) and (not exports.cr_items:isInventoryShow()) and (not exports.cr_hud:isOverlayShow()) then
+    if (getElementData(localPlayer, "loggedin") == 1) and (getElementData(localPlayer, "hud_settings").killmessage == 1) and (not exports.cr_items:isInventoryShow()) and (not exports.cr_hud:isOverlayRender()) then
         local y = screenSize.y / 2 - (#messages * 10)
         for i, message in ipairs(messages) do
             local killerName, killedName, weaponID, score, killerNametagColor, killedNametagColor, killerVIPLevel, tick = unpack(message)

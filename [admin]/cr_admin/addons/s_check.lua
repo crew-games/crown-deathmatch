@@ -260,7 +260,7 @@ addCommandHandler("history",
 
 addEvent("admin:showInventory", true)
 addEventHandler("admin:showInventory", root, 
-	function ()
+	function()
 		 executeCommandHandler("showinv", client, getElementData(source, "playerid"))
 	end
 )

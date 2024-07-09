@@ -1,17 +1,15 @@
 local mysql = exports.cr_mysql
-vipPlayers = {}
+vips = {}
 
 addEventHandler("onResourceStart", resourceRoot, function()
-	dbQuery(
-		function(qh)
-			local res, rows, err = dbPoll(qh, 0)
-			if rows > 0 then
-				for index, row in ipairs(res) do
-					loadVIP(row.char_id)
-				end
+	dbQuery(function(qh)
+		local res, rows, err = dbPoll(qh, 0)
+		if rows > 0 then
+			for index, row in ipairs(res) do
+				loadVIP(row.char_id)
 			end
-		end,
-	mysql:getConnection(), "SELECT `char_id` FROM `vipPlayers`")
+		end
+	end, mysql:getConnection(), "SELECT `char_id` FROM `vips`")
 end)
 
 addEventHandler("onResourceStop", resourceRoot, function()
@@ -33,78 +31,95 @@ function loadVIP(charID)
 	local charID = tonumber(charID)
 	if not charID then return false end
 	
-	dbQuery(
-		function(qh)
-			local res, rows, err = dbPoll(qh, 0)
-			if rows > 0 then
-				for index, row in ipairs(res) do
-					local vipType = tonumber(row["vip_type"]) or 0
-					local endTick = tonumber(row["vip_end_tick"]) or 0
-					if vipType > 0 then
-						vipPlayers[charID] = {}
-						vipPlayers[charID].type = vipType
-						vipPlayers[charID].endTick = endTick
-						local targetPlayer = exports.cr_global:getPlayerFromCharacterID(charID)
-						if targetPlayer then
-							setElementData(targetPlayer, "vip", vipType)
-						end
-					else 
-						setElementData(targetPlayer, "vip", 0)
+	dbQuery(function(qh)
+		local res, rows, err = dbPoll(qh, 0)
+		if rows > 0 then
+			for index, row in ipairs(res) do
+				local vipType = tonumber(row["vip_type"]) or 0
+				local endTick = tonumber(row["vip_end_tick"]) or 0
+				if vipType > 0 then
+					vips[charID] = {}
+					vips[charID].type = vipType
+					vips[charID].endTick = endTick
+					local targetPlayer = exports.cr_global:getPlayerFromCharacterID(charID)
+					if targetPlayer then
+						setElementData(targetPlayer, "vip", vipType)
 					end
+				else 
+					setElementData(targetPlayer, "vip", 0)
 				end
 			end
-		end,
-	mysql:getConnection(), "SELECT `vip_type`, `vip_end_tick` FROM `vipPlayers` WHERE char_id='" .. charID .. "'")
+		end
+	end, mysql:getConnection(), "SELECT `vip_type`, `vip_end_tick` FROM `vips` WHERE `char_id` = ?", charID)
+end
+
+function addVIP(targetPlayer, vipRank, days)
+	if targetPlayer and vipRank and days then
+		local charID = tonumber(getElementData(targetPlayer, "dbid"))
+		if not charID then
+			return false
+		end
+		
+		local endTick = math.max(days, 1) * 24 * 60 * 60 * 1000
+		if not isPlayerVIP(charID) then
+			local id = SmallestID()
+			dbExec(mysql:getConnection(), "INSERT INTO `vips` (`id`, `char_id`, `vip_type`, `vip_end_tick`) VALUES (?, ?, ?, ?)", id, charID, vipRank, endTick)
+			loadVIP(charID)
+		else
+			dbExec(mysql:getConnection(), "UPDATE `vips` SET vip_end_tick = vip_end_tick + ? WHERE char_id = ? and vip_type = ? LIMIT 1", endTick, charID, vipRank)
+			loadVIP(charID)
+		end
+	end
 end
 
 function saveVIP(charID)
 	local charID = tonumber(charID)
 	if not charID then return false end
-	if not vipPlayers[charID] then return false end
-	
-	local success = dbExec(mysql:getConnection(), "UPDATE `vipPlayers` SET vip_end_tick='" .. (vipPlayers[charID].endTick) .. "' WHERE char_id=" .. charID .. " LIMIT 1")
-	if not success then
-		outputDebugString("@vipsystem_Core_S: mysql hatası. 79.satır")
-		return
-	end
+	if not vips[charID] then return false end
+	dbExec(mysql:getConnection(), "UPDATE `vips` SET `vip_end_tick` = ? WHERE `char_id` = ? LIMIT 1", vips[charID].endTick, charID)
 end
 
 function removeVIP(charID)
-	if not vipPlayers[charID] then return false end	
-	local query = dbExec(mysql:getConnection(), "DELETE FROM `vipPlayers` WHERE char_id=" .. charID .. " LIMIT 1")
+	if not vips[charID] then return false end	
+	local query = dbExec(mysql:getConnection(), "DELETE FROM `vips` WHERE `char_id` = ? LIMIT 1", charID)
 	if query then
 		local targetPlayer = exports.cr_global:getPlayerFromCharacterID(charID)
 		if targetPlayer then
 			setElementData(targetPlayer, "vip", 0)
 			outputChatBox("[!]#FFFFFF VIP süreniz doldu.", targetPlayer, 0, 0, 255, true)
 		end
-		vipPlayers[charID] = nil
+		vips[charID] = nil
 		return true
 	end
 	return false
 end
 
+function getVIPExpireTime(charID)
+	if charID and tonumber(charID) then
+		charID = tonumber(charID)
+		if vips[charID] then
+			local vipType = vips[charID].type
+			local remaining = vips[charID].endTick
+			local remainingInfo = exports.cr_datetime:secondsToTimeDesc(remaining / 1000)
+			return remainingInfo
+		end
+	end
+	return false
+end
+
 function checkExpireTime()
-	for charID, data in pairs(vipPlayers) do
+	for charID, data in pairs(vips) do
 		if (charID and data) then
-			if vipPlayers[charID] then
-				if vipPlayers[charID].endTick and vipPlayers[charID].endTick <= 0 then
-
-					local success = removeVIP(charID)
-					if success then
-					end
-
-				elseif vipPlayers[charID].endTick and vipPlayers[charID].endTick > 0 then
-
-					vipPlayers[charID].endTick = math.max(vipPlayers[charID].endTick - (60 * 1000), 0)
+			if vips[charID] then
+				if vips[charID].endTick and vips[charID].endTick <= 0 then
+					removeVIP(charID)
+				elseif vips[charID].endTick and vips[charID].endTick > 0 then
+					vips[charID].endTick = math.max(vips[charID].endTick - (60 * 1000), 0)
 					saveVIP(charID)
 					
-					if vipPlayers[charID].endTick == 0 then
-						local success = removeVIP(charID)
-						if success then
-						end
+					if vips[charID].endTick == 0 then
+						removeVIP(charID)
 					end
-
 				end
 			end
 		end

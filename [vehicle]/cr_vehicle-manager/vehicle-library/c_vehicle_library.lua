@@ -197,7 +197,7 @@ function showLibrary(vehs, thePed)
 					if row ~= -1 and col ~= -1 then
 						local vehShopID = guiGridListGetItemText(grid , row, 1)
 						exports.cr_global:fadeToBlack()
-						setTimer(function ()
+						setTimer(function()
 							triggerServerEvent("vehicle-manager:handling:createTestVehicle", localPlayer, tonumber(vehShopID), thePed, true)
 						end, 1000, 1)
 						closeLibrary()

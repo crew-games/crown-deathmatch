@@ -19,6 +19,8 @@
     <export function="sendLocalMeAction" type="server" />
     <export function="sendLocalDoAction" type="server" />
     <export function="findPlayerByPartialNick" type="shared" />
+    <export function="getPlayerMaskState" type="shared" />
+	
     <script src="admin_warn.lua" type="client" />
     <script src="g_admin_globals.lua" type="server" />
     <script src="c_gui.lua" type="client" />

@@ -3,6 +3,7 @@
     <script src="___generated___/checker.lua" type="client" cache="false" />
     <min_mta_version server="1.5.6-9.18728" client="1.5.6-9.18728"></min_mta_version>
     <oop>true</oop>
+	<download_priority_group>997</download_priority_group>
 
     <script src="client/enums.lua" type="client" cache="false" />
     <script src="client/main.lua" type="client" cache="false" />
@@ -171,13 +172,7 @@
     
     <file src="public/images/vignette.png" />
     <file src="public/images/window_body.png" />
-    <file src="public/images/logos/duotone.png" />
-    <file src="public/images/logos/light.png" />
-    <file src="public/images/logos/regular.png" />
-    <file src="public/images/logos/solid.png" />
-    <file src="public/images/logos/thin.png" />
+    <file src="public/images/logo.png" />
     
     <file src="public/sounds/key.mp3" />
-    
-    <download_priority_group>997</download_priority_group>
 </meta>

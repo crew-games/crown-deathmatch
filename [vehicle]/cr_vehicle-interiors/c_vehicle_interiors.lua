@@ -1,17 +1,11 @@
 function useVehicleInterior(key, keyState, vehicle)
-	--outputDebugString("useVehicleInterior()")
-	--if (key == "f" and keyState == "down") then
-		unbindKey("enter_exit", "down", useVehicleInterior)
-		--unbindKey("space", "down", useVehicleInterior)
-		hideIntName()
-		--outputDebugString("useVehicleInterior() ok")
-		triggerServerEvent("enterVehicleInterior", localPlayer, vehicle)
-		cancelEvent()
-	--end
+	unbindKey("enter_exit", "down", useVehicleInterior)
+	hideIntName()
+	triggerServerEvent("enterVehicleInterior", localPlayer, vehicle)
+	cancelEvent()
 end
 
 function vehInteriorGUI()
-	--outputDebugString("vehInteriorGUI()")
 	if (isElement(gInteriorName) and guiGetVisible(gInteriorName)) then
 		if isTimer(timer) then
 			killTimer(timer)
@@ -20,12 +14,8 @@ function vehInteriorGUI()
 
 		destroyElement(gInteriorName)
 		gInteriorName = nil
-
-		--destroyElement(gOwnerName)
-		--gOwnerName = nil
 		
 		unbindKey("enter_exit", "down", useVehicleInterior)
-		--unbindKey("space", "down", useVehicleInterior)
 	end
 	local px,py,pz = getElementPosition(localPlayer)
 	local x,y,z = getElementPosition(source)
@@ -35,32 +25,21 @@ function vehInteriorGUI()
 	guiLabelSetHorizontalAlign(gInteriorName, "center", true)
 	guiSetAlpha(gInteriorName, 0.0)
 
-	--gOwnerName = guiCreateLabel(0.0, 0.90, 1.0, 0.3, "Press SPACE to enter " .. tostring(getVehicleName(source)), true)
-	--guiSetFont(gOwnerName, "default-bold-small")
-	--guiLabelSetHorizontalAlign(gOwnerName, "center", true)
-	--guiSetAlpha(gOwnerName, 0.0)
-
 	timer = setTimer(fadeMessage, 50, 20, true)
 
-	--outputDebugString("source: " .. tostring(source))
 	local result = bindKey("enter_exit", "down", useVehicleInterior, source)
-	--outputDebugString("bind key = " .. tostring(result))
-	--bindKey("space", "down", useVehicleInterior, source)
 end
 addEvent("vehicle-interiors:showInteriorGUI", true)
 addEventHandler("vehicle-interiors:showInteriorGUI", root, vehInteriorGUI)
+
 function hideVehInteriorGUI()
-	--outputDebugString("unbound")
 	unbindKey("enter_exit", "down", useVehicleInterior)
-	--unbindKey("space", "down", useVehicleInterior)
 	hideIntName()
 end
 addEvent("vehicle-interiors:hideInteriorGUI", true)
 addEventHandler("vehicle-interiors:hideInteriorGUI", root, hideVehInteriorGUI)
 
-
 function changeTexture(model)
-	--outputDebugString("applying texture (" .. tostring(model) .. ")")
 	if (model == 577) then --AT-400
 		local txd = engineLoadTXD("files/at400_interior.txd")
 		engineImportTXD(txd,14548)
@@ -132,7 +111,7 @@ function getPositionFromElementOffset() -- This is for /windows !
 		--outputDebugString("CLIENT x " .. x .. " y " .. y .. " z " .. z)
 		triggerServerEvent("seeThroughWindows", root, localPlayer, x, y, z) -- Return the transformed point
 
-		addEventHandler("onClientRender", root, function ()
+		addEventHandler("onClientRender", root, function()
 				if getElementData(localPlayer, "isInWindow") == true then
 					triggerServerEvent("updateWindowsView", root, localPlayer)
 				end

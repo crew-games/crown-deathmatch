@@ -7,6 +7,7 @@ setVehiclePlateText(robberyVehicle, "CROWN")
 setElementData(robberyVehicle, "robberyVehicle", true)
 setElementData(robberyVehicle, "robberyVehicleBlock", false)
 robberyVehicleBlip = createBlipAttachedTo(robberyVehicle, 52)
+setElementData(robberyVehicleBlip, "name", "Banka Kamyonu")
 
 addEventHandler("onVehicleStartEnter", root, function(thePlayer, seat)
     if source == robberyVehicle then

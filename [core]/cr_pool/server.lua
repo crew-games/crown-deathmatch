@@ -145,7 +145,7 @@ addEventHandler("onResourceStart", root,
 )
 ]]
 
-addEventHandler("onResourceStop", resourceRoot, function () --Farid
+addEventHandler("onResourceStop", resourceRoot, function() --Farid
 	exports.cr_data:save(poolTable, "poolTable")
 	exports.cr_data:save(indexedPools, "indexedPools")
 end)
@@ -169,19 +169,19 @@ end)
 
 
 addEventHandler("onPlayerJoin", root,
-	function ()
+	function()
 		allocateElement(source)
 	end
 )
 
 addEventHandler("onPlayerQuit", root,
-	function ()
+	function()
 		deallocateElement(source)
 	end
 )
 
 addEventHandler("onElementDestroy", root,
-	function ()
+	function()
 		deallocateElement(source)
 	end
 )

@@ -102,7 +102,7 @@ addCommandHandler("passjoint", passJointCMD, false, false)
 -- Sync to new players
 addEvent("realism:smoking.request", true)
 addEventHandler("realism:smoking.request", root, 
-	function ()
+	function()
 		local players = exports.cr_pool:getPoolElementsByType("player")
 		for key, thePlayer in ipairs(players) do
 			local isSmoking = getElementData(thePlayer, "realism:smoking")
