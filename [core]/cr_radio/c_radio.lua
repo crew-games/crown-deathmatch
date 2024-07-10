@@ -2,22 +2,23 @@ radio = 0
 song = ""
 lawVehicles = { [416]=true, [433]=true, [427]=true, [528]=true, [407]=true, [544]=true, [523]=true, [598]=true, [596]=true, [597]=true, [599]=true, [432]=true, [601]=true, [509]=true, [481]=true, [510]=true, [462]=true, [448]=true, [581]=true, [522]=true, [461]=true, [521]=true, [523]=true, [463]=true, [586]=true, [468]=true, [471]=true }
 
-local SweetSixteen = exports.cr_fonts:getFont("SweetSixteen", 22)
+local theme = exports.cr_ui:useTheme()
+local fonts = exports.cr_ui:useFonts()
 
 local soundElement = nil
 local soundElementsOutside = {}
 
-function setVolume(commandname, val)
-	if tonumber(val) then
-		val = tonumber(val)
-		if (val >= 0 and val <= 100) then
-			triggerServerEvent("car:radio:vol", localPlayer, val)
+function setVolume(commandName, volume)
+	if tonumber(volume) then
+		volume = tonumber(volume)
+		if (volume >= 0 and volume <= 100) then
+			triggerServerEvent("car:radio:vol", localPlayer, volume)
 			return
 		end
 	end
-	outputChatBox ("* ERROR: /setvol 0 - 100", 255, 0, 0, false)
+	outputChatBox("SYNTAX: /" .. commandName .. " [0-100]", 255, 194, 14)
 end
-addCommandHandler("setvol", setVolume)
+addCommandHandler("setvol", setVolume, false, false)
 
 function saveRadio(station)
 	if getElementData(localPlayer, "streams") == "0" then
@@ -29,7 +30,6 @@ function saveRadio(station)
 	if (station == 0) then
 		return
 	end
-
 	
 	local vehicle = getPedOccupiedVehicle(localPlayer)
 
@@ -231,7 +231,6 @@ addEventHandler("onClientElementStreamOut", root,
     end
 )
 
--- Shmorf (27/7/2013 21:41)
 local sw, sh = guiGetScreenSize ()
 local mp3Station = nil
 local mp3Sound = nil
@@ -243,12 +242,19 @@ local mp3_h = 300
 local mp3_x = math.floor(sw * 0.0215) - 10
 local mp3_y = sh * 0.89 - 10 - mp3_h
 
-local sx, sy = guiGetScreenSize()
+local screenSize = Vector2(guiGetScreenSize())
 
-function draw()
-	local left = math.floor(sw * 0.0215)
-	local top = sh - 100
-	
+local containerSize = {
+    x = 150,
+    y = 30
+}
+
+local containerPosition = {
+    x = screenSize.x / 2 - containerSize.x / 2,
+    y = screenSize.y - containerSize.y - 15
+}
+
+setTimer(function()
 	local vehicle = getPedOccupiedVehicle(localPlayer)
 	if vehicle then
 		if getElementData(localPlayer, "streams") == "0" then
@@ -260,20 +266,12 @@ function draw()
 		if radioID and radioID >= 0 and streams[radioID] and getVehicleType(vehicle) ~= 'BMX' and getVehicleType(vehicle) ~= 'Bike' and getVehicleType(vehicle) ~= 'Quad' then
 			local sound = soundElementsOutside[vehicle]
 			local text = streams[radioID][1]
-			
-			local color = tocolor(255, 255, 255, 255)
-			if radioID == 0 then
-				color = tocolor(255, 0, 0, 255)
-			end
 
-			dxDrawText(text, sw+1, 26, 1, 1, tocolor(0, 0, 0, 255), 1, SweetSixteen, "center", "top", true, true, true, true)
-			dxDrawText(text, sw, 25, 0, 0, color, 1, SweetSixteen, "center", "top", true, true, true, true)
-
-			left = left + widthToDraw + 20*2
+			dxDrawText(text, containerPosition.x + 2, containerPosition.y + 2, containerPosition.x + containerSize.x, containerPosition.y + containerSize.y, exports.cr_ui:rgba(theme.GRAY[900], 1), 1, fonts.BebasNeueBold.h1, "center", "center")
+			dxDrawText(text, containerPosition.x, containerPosition.y, containerPosition.x + containerSize.x, containerPosition.y + containerSize.y, exports.cr_ui:rgba(theme.GRAY[100], 1), 1, fonts.BebasNeueBold.h1, "center", "center")
 		end
 	end
-end
-addEventHandler("onClientRender", root, draw)
+end, 0, 0)
 
 function updateCarRadio()
 	local state = getElementData(localPlayer, "streams")

@@ -608,17 +608,12 @@ function getCar(thePlayer, commandName, id)
 					setElementPosition(theVehicle, x, y, z)
 					setVehicleRotation(theVehicle, 0, 0, r)
 				end
-				
                 
 				setElementInterior(theVehicle, getElementInterior(thePlayer))
 				setElementDimension(theVehicle, getElementDimension(thePlayer))
 
-				--exports.cr_logs:dbLog(thePlayer, 6, theVehicle, commandName)
-
-				--addVehicleLogs(id, commandName, thePlayer)
-
 				outputChatBox("[!]#FFFFFF Başarıyla aracınızı yanınıza çektiniz.", thePlayer, 0, 255, 0, true)
-				exports.cr_discord:sendMessage("getcar-log","[GETCAR] " .. exports.cr_global:getPlayerFullAdminTitle(thePlayer) .. " isimli yetkili (#" .. id .. ") ID aracı yanına çekti.")
+				exports.cr_discord:sendMessage("getveh-log", exports.cr_global:getPlayerFullAdminTitle(thePlayer) .. " isimli yetkili [" .. id .. "] ID'li aracı yanına çekti.")
 			else
 				outputChatBox("[!]#FFFFFF Geçersiz araç ID'si.", thePlayer, 255, 0, 0, true)
 			end
@@ -1460,7 +1455,7 @@ function fuelPlayerVehicle(thePlayer, commandName, target, amount)
 						if exports["cr_vehicle-fuel"]:getMaxFuel(getElementModel(veh))<amount or amount==0 then
 							amount = exports["cr_vehicle-fuel"]:getMaxFuel(getElementModel(veh))
 						end
-						setElementData(veh, "fuel", amount, false)
+						setElementData(veh, "fuel", amount)
 						triggerClientEvent(thePlayer, "syncFuel", veh, getElementData(veh, "fuel"))
 						outputChatBox("[!]#FFFFFF " .. targetPlayerName .. " adlı kişinni aracını fulledi .. ", thePlayer,255,255,0,true)
 						outputChatBox("[!]#FFFFFF Aracının benzinini dolduran " .. username .. ".", targetPlayer,0,255,0,true)
@@ -1475,14 +1470,11 @@ end
 addCommandHandler("fuelveh", fuelPlayerVehicle, false, false)
 
 function fuelAllVehicles(thePlayer, commandName)
-	if (exports.cr_integration:isPlayerTrialAdmin(thePlayer)) then
+	if (exports.cr_integration:isPlayerManager(thePlayer)) then
 		local username = getPlayerName(thePlayer)
 		for key, value in ipairs(exports.cr_pool:getPoolElementsByType("vehicle")) do
-			setElementData(value, "fuel", exports["cr_vehicle-fuel"]:getMaxFuel(getElementModel(value)), false)
+			setElementData(value, "fuel", exports["cr_vehicle-fuel"]:getMaxFuel(getElementModel(value)))
 		end
-		--outputChatBox("All vehicles refuelled by Admin " .. username .. ".")
-		executeCommandHandler("ann", thePlayer, "Bütün Araçların Benzinlerini Dolduran Kişi " .. username .. ".")
-		exports.cr_logs:dbLog(thePlayer, 6, { thePlayer  }, "FUELVEHS")
 	end
 end
 addCommandHandler("fuelvehs", fuelAllVehicles, false, false)

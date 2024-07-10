@@ -711,36 +711,34 @@ function changePassword(thePlayer, commandName, password, passwordAgain)
 				local serial = getPlayerSerial(thePlayer)
 				if not isTimer(passwordTimer[serial]) then
 					local accountID = getElementData(thePlayer, "account:id")
-					local salt = exports.cr_global:generateSalt(16)
-					local saltedPassword = salt .. password 
-					local hashedPassword = string.lower(hash("sha256", saltedPassword))
+					local encryptedPassword = string.upper(md5(password))
 					
-					dbExec(exports.cr_mysql:getConnection(), "UPDATE accounts SET password = ?, salt = ? WHERE id = ? LIMIT 1", hashedPassword, salt, accountID)
+					dbExec(exports.cr_mysql:getConnection(), "UPDATE accounts SET password = ? WHERE id = ? LIMIT 1", encryptedPassword, accountID)
 					
-					outputChatBox("[!]#FFFFFF Hesab şifrəniz uğurla dəyişdirildi.", thePlayer, 0, 255, 0, true)
+					outputChatBox("[!]#FFFFFF Hesap şifreniz başarıyla değiştirildi.", thePlayer, 0, 255, 0, true)
 					triggerClientEvent(thePlayer, "playSuccessfulSound", thePlayer)
 					
 					passwordTimer[serial] = setTimer(function() end, 1000 * 60, 1)
 				else
 					local timer = getTimerDetails(passwordTimer[serial])
-					outputChatBox("[!]#FFFFFF Şifrənizi yenidən dəyişmək üçün " .. math.floor(timer / 1000)  .. " saniyə gözləmək lazımdır.", thePlayer, 255, 0, 0, true)
+					outputChatBox("[!]#FFFFFF Şifrenizi tekrar değiştirmek için " .. math.floor(timer / 1000)  .. " saniye beklemeniz gerekmektedir.", thePlayer, 255, 0, 0, true)
 					playSoundFrontEnd(thePlayer, 4)
 				end
 			else
-				outputChatBox("[!]#FFFFFF Şifrələr uyğun gəlmir.", thePlayer, 255, 0, 0, true)
+				outputChatBox("[!]#FFFFFF Şifrələr uyuşmuyor.", thePlayer, 255, 0, 0, true)
 				playSoundFrontEnd(thePlayer, 4)
 			end
 		else
-			outputChatBox("[!]#FFFFFF Şifrə 6 ilə 32 simvol arasında olmalıdır.", thePlayer, 255, 0, 0, true)
+			outputChatBox("[!]#FFFFFF Şifre 6 ila 32 karakter arasında olmalıdır.", thePlayer, 255, 0, 0, true)
 			playSoundFrontEnd(thePlayer, 4)
 		end
 	else
-		outputChatBox("SYNTAX: /" .. commandName .. " [Yeni Şifrəniz] [Yeni Şifrəniz 2x]", thePlayer, 255, 194, 14)
+		outputChatBox("KULLANIM: /" .. commandName .. " [Yeni Şifreniz] [Yeni Şifreniz Tekrar]", thePlayer, 255, 194, 14)
 	end
 end
-addCommandHandler("sifredeyistir", changePassword, false, false)
+addCommandHandler("sifredegistir", changePassword, false, false)
 
-function setOlke(thePlayer, commandName, targetPlayer, country)
+function setUlke(thePlayer, commandName, targetPlayer, country)
 	if exports.cr_integration:isPlayerTrialAdmin(thePlayer) then
 		if country and tonumber(country) then
 			country = tonumber(country)
@@ -750,19 +748,19 @@ function setOlke(thePlayer, commandName, targetPlayer, country)
 					local dbid = getElementData(targetPlayer, "dbid")
 					setElementData(targetPlayer, "country", country)
 					dbExec(exports.cr_mysql:getConnection(), "UPDATE characters SET country = ? WHERE id = ?", country, dbid)
-					outputChatBox("[!]#FFFFFF " .. targetPlayerName .. " adlı oyunçunun ölkəsi [" .. country .. "] olaraq dəyişdirildi.", thePlayer, 0, 255, 0, true)
-					outputChatBox("[!]#FFFFFF " .. exports.cr_global:getPlayerFullAdminTitle(thePlayer) .. " adlı yetkili ölkənizi [" .. country .. "] olaraq dəyişdirdi.", targetPlayer, 0, 0, 255, true)
+					outputChatBox("[!]#FFFFFF " .. targetPlayerName .. " isimli oyuncunun ülkesi [" .. country .. "] olarak değiştirildi.", thePlayer, 0, 255, 0, true)
+					outputChatBox("[!]#FFFFFF " .. exports.cr_global:getPlayerFullAdminTitle(thePlayer) .. " isimli yetkili ülkenizi [" .. country .. "] olarak değiştirdi.", targetPlayer, 0, 0, 255, true)
 				end
 			else
-				outputChatBox("[!]#FFFFFF Bu rəqəmlə heç bir ölkə yoxdur.", thePlayer, 255, 0, 0, true)
+				outputChatBox("[!]#FFFFFF Bu sayıya sahip bir ülke yok.", thePlayer, 255, 0, 0, true)
 				playSoundFrontEnd(thePlayer, 4)
 			end
 		else
-			outputChatBox("SYNTAX: /" .. commandName .. " [Xarakter Adı / ID] [Ölkə ID]", thePlayer, 255, 194, 14)
+			outputChatBox("KULLANIM: /" .. commandName .. " [Karakter Adı / ID] [Ülke ID]", thePlayer, 255, 194, 14)
 		end
 	else
-		outputChatBox("[!]#FFFFFF Kifayət qədər səlahiyyətiniz yoxdur.", thePlayer, 255, 0, 0, true)
+		outputChatBox("[!]#FFFFFF Bu komutu kullanabilmek için gerekli yetkiye sahip değilsiniz.", thePlayer, 255, 0, 0, true)
 		playSoundFrontEnd(thePlayer, 4)
 	end
 end
-addCommandHandler("setolke", setOlke, false, false)
+addCommandHandler("setulke", setUlke, false, false)

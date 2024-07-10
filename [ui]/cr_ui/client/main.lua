@@ -48,17 +48,17 @@ function dxDrawGradient(x, y, w, h, r, g, b, a, vertical, inverce)
     if vertical then
         for i = 0, h do
             if not inverce then
-                dxDrawRectangle(x, y + i, w, 1, tocolor(r, g, b, i / h * a or 255))
+                dxDrawRectangle(x, y + i, w, 1, tocolor(r, g, b, i / h * a or 255), true)
             else
-                dxDrawRectangle(x, y + h - i, w, 1, tocolor(r, g, b, i / h * a or 255))
+                dxDrawRectangle(x, y + h - i, w, 1, tocolor(r, g, b, i / h * a or 255), true)
             end
         end
     else
         for i = 0, w do
             if not inverce then
-                dxDrawRectangle(x + i, y, 1, h, tocolor(r, g, b, i / w * a or 255))
+                dxDrawRectangle(x + i, y, 1, h, tocolor(r, g, b, i / w * a or 255), true)
             else
-                dxDrawRectangle(x + w - i, y, 1, h, tocolor(r, g, b, i / w * a or 255))
+                dxDrawRectangle(x + w - i, y, 1, h, tocolor(r, g, b, i / w * a or 255), true)
             end
         end
     end

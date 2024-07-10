@@ -869,70 +869,32 @@ end
 addCommandHandler("duyuru", adminDuyuru, false, false)
 
 function globalOOC(thePlayer, commandName, ...)
-	local logged = tonumber(getElementData(thePlayer, "loggedin"))
-
-	if (logged==1) then
-		if not (exports.cr_integration:isPlayerSeniorAdmin(thePlayer)) then
-		return end
-		if not (...) then
-			outputChatBox("KULLANIM: /" .. commandName .. " [Mesaj]", thePlayer, 255, 194, 14)
-		else
+	if exports.cr_integration:isPlayerSeniorAdmin(thePlayer) then
+		if (...) then
 			local oocEnabled = exports.cr_global:getOOCState()
 			message = table.concat({...}, " ")
 			local muted = getElementData(thePlayer, "muted")
-			if (oocEnabled==0) and not exports.cr_integration:isPlayerAdmin2(thePlayer) and not exports.cr_integration:isPlayerScripter(thePlayer) then
+			if (oocEnabled == 0) and not exports.cr_integration:isPlayerAdmin2(thePlayer) and not exports.cr_integration:isPlayerScripter(thePlayer) then
 				outputChatBox("OOC Sohbet şu anda devre dışı.", thePlayer, 255, 0, 0)
-			elseif (muted==1) then
+			elseif (muted == 1) then
 				outputChatBox("Şu anda OOC Sohbetinden sessize alındı.", thePlayer, 255, 0, 0)
 			else
-				local affectedElements = {}
-				local players = exports.cr_pool:getPoolElementsByType("player")
-				local playerName = getPlayerName(thePlayer)
-				local playerID = getElementData(thePlayer, "playerid")
-
-				for k, arrayPlayer in ipairs(players) do
-					local logged = tonumber(getElementData(arrayPlayer, "loggedin"))
-					local targetOOCEnabled = getElementData(arrayPlayer, "globalooc")
-
-					if (logged==1) and (targetOOCEnabled==1) then
-						table.insert(affectedElements, arrayPlayer)
-						if exports.cr_integration:isPlayerAdmin1(thePlayer) then
-                            local adminTitle = exports.cr_global:getPlayerAdminTitle(thePlayer)
-							if getElementData(thePlayer, "hiddenadmin") then
-								outputChatBox("[OOC] #FF0000" .. exports.cr_global:getPlayerFullIdentity(thePlayer) .. "#CCFFFF: " .. message, arrayPlayer, 196, 255, 255, true)
-							else
-								outputChatBox("[OOC] #FF0000" .. exports.cr_global:getPlayerFullIdentity(thePlayer) .. "#CCFFFF: " .. message, arrayPlayer, 196, 255, 255, true)
-							end
-                        else
-							outputChatBox("[OOC] #FF0000" .. exports.cr_global:getPlayerFullIdentity(thePlayer) .. "#CCFFFF: " .. message, arrayPlayer, 196, 255, 255, true)
-                        end
+				for _, arrayPlayer in ipairs(exports.cr_pool:getPoolElementsByType("player")) do
+					if (tonumber(getElementData(arrayPlayer, "loggedin")) == 1) then
+						outputChatBox("[OOC] #FF0000" .. exports.cr_global:getPlayerFullIdentity(thePlayer) .. "#CCFFFF: " .. message .. " ))", arrayPlayer, 196, 255, 255, true)
 					end
 				end
-				exports.cr_logs:dbLog(thePlayer, 18, affectedElements, message)
 			end
+		else
+			outputChatBox("KULLANIM: /" .. commandName .. " [Mesaj]", thePlayer, 255, 194, 14)
 		end
-	end
+	else
+		outputChatBox("[!]#FFFFFF Bu komutu kullanabilmek için gerekli yetkiye sahip değilsiniz.", thePlayer, 255, 0, 0, true)
+		playSoundFrontEnd(thePlayer, 4)
+    end
 end
 addCommandHandler("ooc", globalOOC, false, false)
 addCommandHandler("GlobalOOC", globalOOC)
-
-function playerToggleOOC(thePlayer, commandName)
-	local logged = getElementData(thePlayer, "loggedin")
-
-	if (logged==1) then
-		local playerOOCEnabled = getElementData(thePlayer, "globalooc")
-
-		if (playerOOCEnabled==1) then
-			outputChatBox("Artık Global OOC Sohbetini gizlediniz.", thePlayer, 255, 194, 14)
-			setElementData(thePlayer, "globalooc", 0, false)
-		else
-			outputChatBox("Global OOC Chat'i şimdi etkinleştirdiniz.", thePlayer, 255, 194, 14)
-			setElementData(thePlayer, "globalooc", 1, false)
-		end
-		dbExec(mysql:getConnection(),"UPDATE accounts SET globalooc=" .. (getElementData(thePlayer, "globalooc")) .. " WHERE id = " .. (getElementData(thePlayer, "account:id")))
-	end
-end
-addCommandHandler("toggleooc", playerToggleOOC, false, false)
 
 local advertisementMessages = { "samp", "SA-MP", "Kye", "shodown", "Vedic", "vedic","ventro","Ventro", "server", "sincityrp", "ls-rp", "sincity", "tri0n3", "www.", ".com", "co.cc", ".net", ".co.uk", "everlast", "neverlast", "www.everlastgaming.com", "trueliferp", "truelife", "mtarp", "mta:rp", "mta-rp", "Inception", "Akıllıok", "Enes", "Fatih", "Ediz", "inception", "sarp", "server", "lucy", "Lucy", "Arya", "harun", "rpg", "rp"}
 

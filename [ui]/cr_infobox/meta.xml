@@ -4,11 +4,12 @@
     <min_mta_version server="1.5.6-9.18728" client="1.5.6-9.18728"></min_mta_version>
     <oop>true</oop>
 
+    <script src="client/main.lua" type="client" cache="false" />
     <script src="client/render.lua" type="client" cache="false" />
     <script src="client/social-media.lua" type="client" cache="false" />
+	
     <script src="server/server.lua" type="server" />
     
-    <file src="public/lines.png" />
     <file src="public/sounds/announcement.mp3" />
     <file src="public/sounds/discord.mp3" />
     <file src="public/sounds/error.mp3" />
@@ -18,5 +19,4 @@
     
     <export function="addBox" type="shared" />
     <export function="isRenderInfobox" type="client" />
-    
 </meta>

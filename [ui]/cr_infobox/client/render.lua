@@ -1,50 +1,43 @@
 screenSize = Vector2(guiGetScreenSize())
 
-fonts = {
-	regular = exports.cr_fonts:getFont("UbuntuRegular", 9),
-	bold = exports.cr_fonts:getFont("UbuntuBold", 11),
-	icon = exports.cr_fonts:getFont("FontAwesome", 20),
-}
-
 Infobox = {}
 Infobox.maxBoxes = 5
 Infobox.items = {}
 Infobox.types = {
-    Error = 'error',
-    Warning = 'warning',
-    Info = 'info',
-    Success = 'success',
-    Announcement = 'announcement',
-    Discord = 'discord',
-    Instagram = 'instagram',
-    Youtube = 'youtube',
-    Tiktok = 'tiktok'
+    Error = "error",
+    Warning = "warning",
+    Info = "info",
+    Success = "success",
+	Announcement = "announcement",
+    Discord = "discord",
+    Instagram = "instagram",
+    Youtube = "youtube",
+    Tiktok = "tiktok"
 }
 Infobox.padding = 10
 Infobox.lastClick = 0
 Infobox.placement = {
-    TopLeft = 'top-left',
-    TopCenter = 'top-center',
-    TopRight = 'top-right',
-    CenterLeft = 'center-left',
-    Center = 'center',
-    CenterRight = 'center-right',
-    BottomLeft = 'bottom-left',
-    BottomCenter = 'bottom-center',
-    BottomRight = 'bottom-right'
+    TopLeft = "top-left",
+    TopCenter = "top-center",
+    TopRight = "top-right",
+    CenterLeft = "center-left",
+    Center = "center",
+    CenterRight = "center-right",
+    BottomLeft = "bottom-left",
+    BottomCenter = "bottom-center",
+    BottomRight = "bottom-right"
 }
 Infobox.linesSize = {
     x = 136,
     y = 104 / 2
 }
-Infobox.linesTexture = 'public/lines.png'
 
 Infobox.colorScheme = {
     [Infobox.types.Error] = {
-        __themeColor = 'red',
-        __icon = '',
-        __sound = 'public/sounds/error.mp3',
-        __header = 'Hata',
+        __themeColor = "red",
+        __icon = "",
+        __sound = "public/sounds/error.mp3",
+        __header = "Hata",
         __colors = {
             background = 900,
             hover = 800,
@@ -54,10 +47,10 @@ Infobox.colorScheme = {
         }
     },
     [Infobox.types.Warning] = {
-        __themeColor = 'yellow',
-        __icon = '',
-        __sound = 'public/sounds/warning.mp3',
-        __header = 'Uyarı',
+        __themeColor = "yellow",
+        __icon = "",
+        __sound = "public/sounds/warning.mp3",
+        __header = "Uyarı",
         __colors = {
             background = 900,
             hover = 800,
@@ -67,10 +60,10 @@ Infobox.colorScheme = {
         }
     },
     [Infobox.types.Info] = {
-        __themeColor = 'blue',
-        __icon = '',
-        __sound = 'public/sounds/info.mp3',
-        __header = 'Bilgi',
+        __themeColor = "blue",
+        __icon = "",
+        __sound = "public/sounds/info.mp3",
+        __header = "Bilgi",
         __colors = {
             background = 900,
             hover = 800,
@@ -80,10 +73,10 @@ Infobox.colorScheme = {
         }
     },
     [Infobox.types.Success] = {
-        __themeColor = 'green',
-        __icon = '',
-        __sound = 'public/sounds/success.mp3',
-        __header = 'Başarılı',
+        __themeColor = "green",
+        __icon = "",
+        __sound = "public/sounds/success.mp3",
+        __header = "Başarılı",
         __colors = {
             background = 900,
             hover = 800,
@@ -92,11 +85,11 @@ Infobox.colorScheme = {
             icon = 200
         }
     },
-	[Infobox.types.Announcement] = {
-        __themeColor = 'yellow',
-        __icon = '',
-        __sound = 'public/sounds/announcement.mp3',
-        __header = 'Duyuru',
+    [Infobox.types.Announcement] = {
+        __themeColor = "blue",
+        __icon = "",
+        __sound = "public/sounds/announcement.mp3",
+        __header = "Duyuru",
         __colors = {
             background = 900,
             hover = 800,
@@ -106,10 +99,10 @@ Infobox.colorScheme = {
         }
     },
     [Infobox.types.Discord] = {
-        __themeColor = 'discord',
-        __icon = '',
-        __sound = 'public/sounds/discord.mp3',
-        __iconFont = 'FontAwesomeBrand',
+        __themeColor = "discord",
+        __icon = "",
+        __sound = "public/sounds/discord.mp3",
+        __iconFont = "FontAwesomeBrand",
         __colors = {
             background = 900,
             hover = 800,
@@ -119,10 +112,10 @@ Infobox.colorScheme = {
         }
     },
     [Infobox.types.Instagram] = {
-        __themeColor = 'instagram',
-        __icon = '',
-        __sound = 'public/sounds/discord.mp3',
-        __iconFont = 'FontAwesomeBrand',
+        __themeColor = "instagram",
+        __icon = "",
+        __sound = "public/sounds/discord.mp3",
+        __iconFont = "FontAwesomeBrand",
         __colors = {
             background = 900,
             hover = 800,
@@ -132,10 +125,10 @@ Infobox.colorScheme = {
         }
     },
     [Infobox.types.Youtube] = {
-        __themeColor = 'youtube',
-        __icon = '',
-        __sound = 'public/sounds/discord.mp3',
-        __iconFont = 'FontAwesomeBrand',
+        __themeColor = "youtube",
+        __icon = "",
+        __sound = "public/sounds/discord.mp3",
+        __iconFont = "FontAwesomeBrand",
         __colors = {
             background = 900,
             hover = 800,
@@ -145,10 +138,10 @@ Infobox.colorScheme = {
         }
     },
     [Infobox.types.Tiktok] = {
-        __themeColor = 'tiktok',
-        __icon = '',
-        __sound = 'public/sounds/discord.mp3',
-        __iconFont = 'FontAwesomeBrand',
+        __themeColor = "tiktok",
+        __icon = "",
+        __sound = "public/sounds/discord.mp3",
+        __iconFont = "FontAwesomeBrand",
         __colors = {
             background = 900,
             hover = 800,
@@ -183,43 +176,42 @@ end
 
 function Infobox.overrideTheme(theme)
     theme.DISCORD = {
-        [900] = '#7289da',
-        [800] = '#677bc4',
-        [700] = '#5b6eae',
-        [600] = '#4e608f',
-        [500] = '#424b66',
-        [400] = '#363e4d',
-        [300] = '#F2F2F2',
-        [200] = '#F2F2F2',
-        [100] = '#F2F2F2',
-        [50] = '#060607'
+        [900] = "#7289da",
+        [800] = "#677bc4",
+        [700] = "#5b6eae",
+        [600] = "#4e608f",
+        [500] = "#424b66",
+        [400] = "#363e4d",
+        [300] = "#F2F2F2",
+        [200] = "#F2F2F2",
+        [100] = "#F2F2F2",
+        [50] = "#060607"
     }
     theme.INSTAGRAM = {
-        [900] = '#E1306C',
-        [800] = '#D91E5D',
-        [700] = '#C81F66',
-        [600] = '#B22E5B',
-        [500] = '#A22C5B',
-        [400] = '#8F2A5B',
-        [300] = '#F2F2F2',
-        [200] = '#F2F2F2',
-        [100] = '#F2F2F2',
-        [50] = '#45225B'
+        [900] = "#E1306C",
+        [800] = "#D91E5D",
+        [700] = "#C81F66",
+        [600] = "#B22E5B",
+        [500] = "#A22C5B",
+        [400] = "#8F2A5B",
+        [300] = "#F2F2F2",
+        [200] = "#F2F2F2",
+        [100] = "#F2F2F2",
+        [50] = "#45225B"
     }
     theme.YOUTUBE = {
-        [900] = '#fE0000',
-        [800] = '#FF3434',
-        [700] = '#C81F66',
-        [600] = '#B22E5B',
-        [500] = '#A22C5B',
-        [400] = '#8F2A5B',
-        [300] = '#F2F2F2',
-        [200] = '#F2F2F2',
-        [100] = '#F2F2F2',
-        [50] = '#45225B'
+        [900] = "#fE0000",
+        [800] = "#FF3434",
+        [700] = "#C81F66",
+        [600] = "#B22E5B",
+        [500] = "#A22C5B",
+        [400] = "#8F2A5B",
+        [300] = "#F2F2F2",
+        [200] = "#F2F2F2",
+        [100] = "#F2F2F2",
+        [50] = "#45225B"
     }
     theme.TIKTOK = theme.GRAY
-    theme.WEBSITE = theme.GRAY
 
     return theme
 end
@@ -243,7 +235,7 @@ function Infobox.generateColorScheme(boxType)
     return color
 end
 
-function Infobox.render()
+setTimer(function()
     if #Infobox.items == 0 then
         return
     end
@@ -296,38 +288,38 @@ function Infobox.render()
         local hover = exports.cr_ui:inArea(x, y, width, height)
 
         if hover and box.clipboardText then
-            if getKeyState('mouse1') and Infobox.lastClick + 200 <= getTickCount() then
+            if getKeyState("mouse1") and Infobox.lastClick + 200 <= getTickCount() then
                 Infobox.lastClick = getTickCount()
                 setClipboard(box.clipboardText)
-                exports.cr_infobox:addBox('success', 'Başarıyla kopyaladınız, tarayıcınıza girip doğrudan CTRL+V yaparak yapıştırın.')
+                addBox("success", "Başarıyla kopyaladınız, tarayıcınıza girip doğrudan CTRL+V yaparak yapıştırın.")
             end
         end
 
-        dxDrawRectangle(x, y, width, height, exports.cr_ui:rgba(color[hover and 'hover' or 'background'], 1), true)
-        dxDrawImage(x, y, 136, height, Infobox.linesTexture, 0, 0, 0, tocolor(255, 255, 255, 255), true)
+        dxDrawRectangle(x, y, width, height, exports.cr_ui:rgba(color[hover and "hover" or "background"], 1), true)
 
         dxDrawRectangle(x, y, width, 1, exports.cr_ui:rgba(color.border, 1), true)
         dxDrawRectangle(x, y + height - 1, width, 1, exports.cr_ui:rgba(color.border, 1), true)
 
         dxDrawRectangle(x, y, 1, height, exports.cr_ui:rgba(color.border, 1), true)
         dxDrawRectangle(x + width - 1, y, 1, height, exports.cr_ui:rgba(color.border, 1), true)
-		
+
+        exports.cr_ui:dxDrawGradient(x, y, width, height, 152, 152, 152, 100, true, false)
 
         dxDrawText(
                 box.icon,
-                x + Infobox.padding + 2,
+                x + Infobox.padding,
                 y + Infobox.padding,
                 0,
                 0,
                 exports.cr_ui:rgba(color.icon, 1),
                 1,
                 box.font.icon,
-                'left',
-                'top',
+                "left",
+                "top",
                 false,
                 false,
                 true
-       )
+        )
 
         local textX = x + Infobox.padding * 5.5
         local textY = y + Infobox.padding
@@ -341,12 +333,12 @@ function Infobox.render()
                 exports.cr_ui:rgba(color.text, 1),
                 1,
                 box.font.header,
-                'left',
-                'top',
+                "left",
+                "top",
                 false,
                 false,
                 true
-       )
+        )
 
         textY = textY + Infobox.padding * 2
 
@@ -359,24 +351,24 @@ function Infobox.render()
                 exports.cr_ui:rgba(color.text, 1),
                 1,
                 box.font.message,
-                'left',
-                'top',
+                "left",
+                "top",
                 false,
                 false,
                 true
-       )
+        )
     end
-end
-addEventHandler("onClientRender", root, Infobox.render, true, 'low-5')
+end, 0, 0)
 
 function addBox(boxType, message, duration, placement, clipboardText)
     if #Infobox.items >= Infobox.maxBoxes then
         table.remove(Infobox.items, 1)
     end
 
-    local header = Infobox.colorScheme[boxType].__header or 'Bildirim'
+    local fonts = exports.cr_ui:useFonts()
+    local header = Infobox.colorScheme[boxType].__header or "Bildirim"
 
-    if type(message) == 'table' then
+    if type(message) == "table" then
         header = message.header
         message = message.message
     end
@@ -392,9 +384,9 @@ function addBox(boxType, message, duration, placement, clipboardText)
         iconFont = exports.cr_fonts:getFont(iconFont, 20)
     end
 
-    local messageLines = split(message, '\n')
+    local messageLines = split(message, "\n")
     local messageLinesCount = #messageLines
-    local messageHeight = dxGetFontHeight(1, fonts.regular) * messageLinesCount
+    local messageHeight = dxGetFontHeight(1, fonts.UbuntuRegular.caption) * messageLinesCount
 
     local box = {}
     box.type = boxType
@@ -404,8 +396,8 @@ function addBox(boxType, message, duration, placement, clipboardText)
     box.clipboardText = clipboardText
     box.placement = placement or Infobox.placement.CenterRight
     box.font = {
-        header = fonts.bold,
-        message = fonts.regular,
+        header = fonts.UbuntuBold.h6,
+        message = fonts.UbuntuRegular.caption,
         icon = iconFont or fonts.icon
     }
 
@@ -439,12 +431,5 @@ function addBox(boxType, message, duration, placement, clipboardText)
         table.remove(Infobox.items, 1)
     end, duration, 1)
 end
-addEvent('infobox.addBox', true)
-addEventHandler('infobox.addBox', root, addBox)
-
-function isRenderInfobox()
-	if #Infobox.items > 0 then
-		return true
-	end
-	return false
-end
+addEvent("infobox.addBox", true)
+addEventHandler("infobox.addBox", root, addBox)

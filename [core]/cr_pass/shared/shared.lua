@@ -1,5 +1,5 @@
 currentSeason = 1
-developerMode = true
+developerMode = false
 
 passRewards = {
 	-- [index] = {type, title, value, rarityLevel}
